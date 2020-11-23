@@ -15,30 +15,26 @@
  */
 package com.t07m.musicautomate;
 
-import java.awt.Frame;
-
 import com.t07m.application.Application;
-import com.t07m.musicautomate.command.KillFoobarCommand;
-import com.t07m.musicautomate.command.ReloadConfigCommand;
 import com.t07m.musicautomate.command.StopCommand;
-import com.t07m.musicautomate.foobar2000.FoobarManager;
+import com.t07m.musicautomate.config.MAConfig;
 import com.t07m.swing.console.ConsoleWindow;
 
 import lombok.Getter;
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
-public class MusicAutomate extends Application {
+public class MusicAutomate extends Application{
 
-	private @Getter MusicAutomateConfig config;
-	
-	private @Getter ConsoleWindow console;
-	
 	public static void main(String[] args) {
 		new MusicAutomate();
 	}
 	
+	private @Getter MAConfig config;
+	private @Getter ConsoleWindow console;
+	private @Getter MusicManager musicManager;
+	
 	public void init() {
-		this.config = new MusicAutomateConfig();
+		this.config = new MAConfig();
 		try {
 			this.config.init();
 			this.config.save();
@@ -50,19 +46,19 @@ public class MusicAutomate extends Application {
 			} catch (InterruptedException e1) {}
 			System.exit(-1);
 		}
-		this.console = new ConsoleWindow("MusicAutomate", "MuiscAutomate") {
+		this.console = new ConsoleWindow("Music Automate") {
 			public void closeRequested() {
 				stop();
 			}
 		};
 		this.console.setup();
 		this.console.registerCommand(new StopCommand());
-		this.console.registerCommand(new ReloadConfigCommand(this));
-		this.console.registerCommand(new KillFoobarCommand());
 		this.console.setLocationRelativeTo(null);
-		this.console.setState(Frame.ICONIFIED);
 		this.console.setVisible(true);
-		this.registerService(new FoobarManager(this));
+		this.console.getLogger().info("Launching Application.");
+		this.musicManager = new MusicManager(this);
+		this.registerService(getMusicManager());
 	}
+	
 
 }

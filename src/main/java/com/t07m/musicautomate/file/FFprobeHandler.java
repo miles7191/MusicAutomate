@@ -1,0 +1,67 @@
+/*
+ * Copyright (C) 2020 Matthew Rosato
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.t07m.musicautomate.file;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import net.bramp.ffmpeg.FFprobe;
+import net.bramp.ffmpeg.probe.FFmpegFormat;
+
+public class FFprobeHandler {
+
+	private static String ffprobePath;
+	private static FFprobe staticProbe;
+
+	public static FFmpegFormat probe(String file) {
+		if(Files.exists(Paths.get(file))) {
+			FFprobe probe = getProbe();
+			if(probe != null) {
+				try {
+					return probe.probe(file).getFormat();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+
+	private static FFprobe getProbe() {
+		try {
+			if(ffprobePath != null) {
+				if(staticProbe == null) {
+					staticProbe = new FFprobe(ffprobePath);
+				}
+				if(staticProbe != null && staticProbe.isFFprobe()) {
+					return staticProbe;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static void setPath(String path) {
+		if(!path.equals(ffprobePath)){
+			staticProbe = null;
+			ffprobePath = path;
+		}
+	}
+
+}
