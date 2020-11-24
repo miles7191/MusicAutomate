@@ -15,9 +15,13 @@
  */
 package com.t07m.musicautomate;
 
+import java.util.logging.Level;
+
 import com.t07m.application.Application;
+import com.t07m.musicautomate.command.SetCommand;
 import com.t07m.musicautomate.command.StopCommand;
 import com.t07m.musicautomate.config.MAConfig;
+import com.t07m.musicautomate.music.MusicBuffer;
 import com.t07m.swing.console.ConsoleWindow;
 
 import lombok.Getter;
@@ -31,8 +35,10 @@ public class MusicAutomate extends Application{
 	
 	private @Getter MAConfig config;
 	private @Getter ConsoleWindow console;
-	private @Getter MusicManager musicManager;
+	private @Getter MusicBuffer musicBuffer;
+	private @Getter MusicPlayer musicPlayer;
 	
+	@SuppressWarnings("serial")
 	public void init() {
 		this.config = new MAConfig();
 		try {
@@ -51,13 +57,17 @@ public class MusicAutomate extends Application{
 				stop();
 			}
 		};
+		this.console.getLogger().setLevel(Level.FINE);
 		this.console.setup();
 		this.console.registerCommand(new StopCommand());
+		this.console.registerCommand(new SetCommand());
 		this.console.setLocationRelativeTo(null);
 		this.console.setVisible(true);
 		this.console.getLogger().info("Launching Application.");
-		this.musicManager = new MusicManager(this);
-		this.registerService(getMusicManager());
+		this.musicBuffer = new MusicBuffer(this);
+		this.musicPlayer = new MusicPlayer(this);
+		this.registerService(musicBuffer);
+		this.registerService(musicPlayer);
 	}
 	
 

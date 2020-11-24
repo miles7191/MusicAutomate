@@ -28,6 +28,7 @@ public class MAConfig extends YamlConfig{
 	private @Getter @Setter String sourcePath = "";
 	private @Getter @Setter String scratchPath = System.getenv("TEMP");
 	private @Getter @Setter double transitionTime = 5.0;
+	private @Getter @Setter int musicBuffer = 5;
 	
 	public MAConfig() {
 		CONFIG_HEADER = new String[]{"MusicAutomate Configuration Data"};
