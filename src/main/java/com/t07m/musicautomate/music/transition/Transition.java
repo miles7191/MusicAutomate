@@ -41,10 +41,10 @@ public class Transition {
 						if(current.getTinyMusic().loaded() && current.getTinyMusic().playing()) {
 							remaining = (current.getTinyMusic().getDuration() - current.getTinyMusic().getCurrentPosition())/ 1000.0;
 						}
-						if(remaining < fadeIn.getLength()) {
+						if(next.getTinyMusic().loaded() && remaining < fadeIn.getLength()) {
 							fadeIn.update(next, Direction.IN, remaining);
 						}
-						if(remaining < fadeOut.getLength()) {
+						if(current.getTinyMusic().loaded() && remaining < fadeOut.getLength()) {
 							fadeOut.update(current, Direction.OUT, remaining);
 						}
 						if(remaining <= 0) {

@@ -58,7 +58,7 @@ public class MusicAutomate extends Application{
 				stop();
 			}
 		};
-		//this.console.getLogger().setLevel(Level.FINER);
+		//this.console.getLogger().setLevel(Level.FINEST);
 		this.console.setup();
 		this.console.registerCommand(new StopCommand());
 		this.console.registerCommand(new SetCommand());
