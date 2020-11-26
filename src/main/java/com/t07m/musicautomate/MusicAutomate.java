@@ -22,6 +22,7 @@ import com.t07m.musicautomate.command.SetCommand;
 import com.t07m.musicautomate.command.StopCommand;
 import com.t07m.musicautomate.config.MAConfig;
 import com.t07m.musicautomate.music.MusicBuffer;
+import com.t07m.musicautomate.music.MusicPlayer;
 import com.t07m.swing.console.ConsoleWindow;
 
 import lombok.Getter;
@@ -57,7 +58,7 @@ public class MusicAutomate extends Application{
 				stop();
 			}
 		};
-		this.console.getLogger().setLevel(Level.FINE);
+		//this.console.getLogger().setLevel(Level.FINER);
 		this.console.setup();
 		this.console.registerCommand(new StopCommand());
 		this.console.registerCommand(new SetCommand());

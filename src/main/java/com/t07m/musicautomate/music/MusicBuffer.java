@@ -127,6 +127,7 @@ public class MusicBuffer extends Service<MusicAutomate>{
 		for(AutoMusic music : buffer) {
 			music.getTinyMusic().unload();
 		}
+		TinySound.shutdown();
 	}
 
 }

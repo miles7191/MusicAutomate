@@ -27,8 +27,11 @@ public class MAConfig extends YamlConfig{
 	private @Getter @Setter String ffprobePath = "lib/ffprobe.exe";
 	private @Getter @Setter String sourcePath = "";
 	private @Getter @Setter String scratchPath = System.getenv("TEMP");
-	private @Getter @Setter double transitionTime = 5.0;
-	private @Getter @Setter int musicBuffer = 5;
+	private @Getter @Setter String fadeOutType = "Linear";
+	private @Getter @Setter double fadeOutTime = 5.0;
+	private @Getter @Setter String fadeInType = "Linear";
+	private @Getter @Setter double fadeInTime = 5.0;
+	private @Getter @Setter int musicBuffer = 2;
 	
 	public MAConfig() {
 		CONFIG_HEADER = new String[]{"MusicAutomate Configuration Data"};

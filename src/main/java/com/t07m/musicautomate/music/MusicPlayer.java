@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.t07m.musicautomate;
+package com.t07m.musicautomate.music;
 
 import java.io.File;
-import java.util.Random;
 import java.util.logging.Level;
 
 import com.t07m.application.Service;
-import com.t07m.musicautomate.file.AudioFile;
-import com.t07m.musicautomate.file.AudioFileHandler;
-import com.t07m.musicautomate.music.AutoMusic;
+import com.t07m.musicautomate.MusicAutomate;
+import com.t07m.musicautomate.config.MAConfig;
+import com.t07m.musicautomate.music.transition.Fade;
+import com.t07m.musicautomate.music.transition.LinearFade;
+import com.t07m.musicautomate.music.transition.Transition;
 
 import kuusisto.tinysound.TinySound;
 
 public class MusicPlayer extends Service<MusicAutomate>{
 
-	private Random r = new Random();
 	private AutoMusic current, next;
+	private Transition transition;
 
 	public MusicPlayer(MusicAutomate app) {
 		super(app, 100);
@@ -37,6 +38,23 @@ public class MusicPlayer extends Service<MusicAutomate>{
 
 	public void init() {
 		TinySound.init();
+		Fade in, out;
+		MAConfig config = app.getConfig();
+		switch(config.getFadeInType().toLowerCase()) {
+		case "linear":
+			in = new LinearFade(config.getFadeInTime());
+			break;
+			default:
+				in = new LinearFade(0);
+		}
+		switch(config.getFadeOutType().toLowerCase()) {
+		case "linear":
+			out = new LinearFade(config.getFadeOutTime());
+			break;
+			default:
+				out = new LinearFade(0);
+		}
+		transition = new Transition(in, out);
 	}
 
 	public void process() {
@@ -45,20 +63,18 @@ public class MusicPlayer extends Service<MusicAutomate>{
 		}else if(next == null) {
 			next = app.getMusicBuffer().getNext();
 		}
-		double tTime = app.getConfig().getTransitionTime();
 		if(current != null) {
 			if(current.getTinyMusic().playing()) {
 				double durationLeft = (current.getTinyMusic().getDuration() - current.getTinyMusic().getCurrentPosition())/ 1000.0;
-				if(durationLeft < tTime) {
-					if(!next.getTinyMusic().playing()) {
-						next.getTinyMusic().play(false, 0);
+				if(durationLeft < transition.getLength()) {
+					if(!transition.isTransitioning()) {
+						app.getConsole().getLogger().log(Level.FINER, "Begining transition to " + new File(next.getAudioFile().filename()).getName());
+						transition.start(current, next);
 					}
-					current.getTinyMusic().setVolume(durationLeft/tTime);
-					next.getTinyMusic().setVolume(1 - current.getTinyMusic().getVolume());
 				}
 			}else if(!current.getTinyMusic().done()) {
 				current.getTinyMusic().play(false);
-				app.getConsole().getLogger().log(Level.INFO	, "Now Playing: " + new File(current.getAudioFile().filename()).getName());;
+				app.getConsole().getLogger().log(Level.INFO	, "Now Playing: " + new File(current.getAudioFile().filename()).getName());
 			}else {
 				current.getTinyMusic().unload();
 				app.getConsole().getLogger().log(Level.FINE	, "Unloaded: " + new File(current.getAudioFile().filename()).getName());
@@ -67,21 +83,6 @@ public class MusicPlayer extends Service<MusicAutomate>{
 				app.getConsole().getLogger().log(Level.INFO	, "Now Playing: " + new File(current.getAudioFile().filename()).getName());
 			}
 		}
-	}
-
-	private AudioFile getRandomAudioFile(File source) {
-		File[] files = source.listFiles();
-		int attempt = 0;
-		while(attempt < 5) {
-			var temp = files[r.nextInt(files.length)];
-			if(!temp.isDirectory()) {
-				var af = AudioFileHandler.getAudioFile(temp.getAbsolutePath());
-				if(af != null)
-					return af;	
-			}
-			attempt++;
-		}
-		return null;
 	}
 
 	public void cleanup() {
