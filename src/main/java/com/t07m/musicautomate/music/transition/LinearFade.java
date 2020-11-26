@@ -15,8 +15,6 @@
  */
 package com.t07m.musicautomate.music.transition;
 
-import java.io.File;
-
 import com.t07m.musicautomate.music.AutoMusic;
 
 public class LinearFade extends Fade{
@@ -27,7 +25,11 @@ public class LinearFade extends Fade{
 
 	public void update(AutoMusic music, Direction direction, double remaining) {
 		double percentage = remaining/length;
-		music.getTinyMusic().setVolume(direction == Direction.OUT ? percentage : (1-percentage));
+		if(direction == Direction.OUT) {
+			music.getTinyMusic().setVolume(percentage);
+		}else if(direction == Direction.IN) {
+			music.getTinyMusic().setVolume(1-percentage);
+		}
 	}
 
 }
