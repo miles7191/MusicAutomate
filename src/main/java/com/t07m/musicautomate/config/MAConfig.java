@@ -32,6 +32,7 @@ public class MAConfig extends YamlConfig{
 	private @Getter @Setter String fadeInType = "Linear";
 	private @Getter @Setter double fadeInTime = 5.0;
 	private @Getter @Setter int musicBuffer = 2;
+	private @Getter @Setter String logger = "INFO";
 	
 	public MAConfig() {
 		CONFIG_HEADER = new String[]{"MusicAutomate Configuration Data"};
