@@ -37,7 +37,10 @@ public class Transition {
 			Thread t = new Thread() {
 				public void run() {
 					while(transitioning) {
-						double remaining = (current.getTinyMusic().getDuration() - current.getTinyMusic().getCurrentPosition())/ 1000.0;
+						double remaining = 0;
+						if(current.getTinyMusic().playing()) {
+							remaining = (current.getTinyMusic().getDuration() - current.getTinyMusic().getCurrentPosition())/ 1000.0;
+						}
 						fadeIn.update(next, Direction.IN, remaining);
 						fadeOut.update(current, Direction.OUT, remaining);
 						if(remaining <= 0) {
