@@ -296,6 +296,10 @@ public class MemMusic implements Music {
 		this.reference = null;
 	}
 
+	public boolean loaded() {
+		return this.reference != null;
+	}
+	
 	/////////////
 	//Reference//
 	/////////////

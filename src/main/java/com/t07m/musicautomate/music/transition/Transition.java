@@ -38,13 +38,20 @@ public class Transition {
 				public void run() {
 					while(transitioning) {
 						double remaining = 0;
-						if(current.getTinyMusic().playing()) {
+						if(current.getTinyMusic().loaded() && current.getTinyMusic().playing()) {
 							remaining = (current.getTinyMusic().getDuration() - current.getTinyMusic().getCurrentPosition())/ 1000.0;
 						}
-						fadeIn.update(next, Direction.IN, remaining);
-						fadeOut.update(current, Direction.OUT, remaining);
+						if(remaining < fadeIn.getLength()) {
+							fadeIn.update(next, Direction.IN, remaining);
+						}
+						if(remaining < fadeOut.getLength()) {
+							fadeOut.update(current, Direction.OUT, remaining);
+						}
 						if(remaining <= 0) {
 							transitioning = false;
+							try {
+								Thread.currentThread().join();
+							} catch (InterruptedException e) {}
 						}else {
 							try {
 								Thread.sleep(50);
