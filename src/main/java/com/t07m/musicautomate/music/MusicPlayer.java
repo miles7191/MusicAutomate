@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import com.t07m.application.Service;
 import com.t07m.musicautomate.MusicAutomate;
 import com.t07m.musicautomate.config.MAConfig;
+import com.t07m.musicautomate.music.transition.ExponentialFade;
 import com.t07m.musicautomate.music.transition.Fade;
 import com.t07m.musicautomate.music.transition.LinearFade;
 import com.t07m.musicautomate.music.transition.Transition;
@@ -44,12 +45,18 @@ public class MusicPlayer extends Service<MusicAutomate>{
 		case "linear":
 			in = new LinearFade(config.getFadeInTime());
 			break;
+		case "exponential":
+			in = new ExponentialFade(config.getFadeInTime());
+			break;
 			default:
 				in = new LinearFade(0);
 		}
 		switch(config.getFadeOutType().toLowerCase()) {
 		case "linear":
 			out = new LinearFade(config.getFadeOutTime());
+			break;
+		case "exponential":
+			out = new ExponentialFade(config.getFadeOutTime());
 			break;
 			default:
 				out = new LinearFade(0);
