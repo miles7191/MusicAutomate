@@ -54,7 +54,7 @@ public class MusicAutomate extends Application{
 			System.exit(-1);
 		}
 		this.console = new ConsoleWindow("Music Automate") {
-			public void closeRequested() {
+			public void close() {
 				stop();
 			}
 		};
@@ -70,6 +70,4 @@ public class MusicAutomate extends Application{
 		this.registerService(musicBuffer);
 		this.registerService(musicPlayer);
 	}
-	
-
 }

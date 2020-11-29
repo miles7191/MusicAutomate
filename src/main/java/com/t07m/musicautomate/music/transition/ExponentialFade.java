@@ -15,8 +15,6 @@
  */
 package com.t07m.musicautomate.music.transition;
 
-import java.io.File;
-
 import com.t07m.musicautomate.music.AutoMusic;
 
 public class ExponentialFade extends Fade{

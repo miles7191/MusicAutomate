@@ -17,8 +17,8 @@ package com.t07m.musicautomate.command;
 
 import java.util.Arrays;
 
-import com.t07m.swing.console.Command;
-import com.t07m.swing.console.ConsoleWindow;
+import com.t07m.console.Command;
+import com.t07m.console.Console;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -35,7 +35,7 @@ public class SetCommand extends Command{
 		setOptionParser(op);
 	}
 	
-	public void process(OptionSet optionSet, ConsoleWindow console) {
+	public void process(OptionSet optionSet, Console console) {
 	    if(optionSet.has("volume")) {
 	    	double volume = ((Double) optionSet.valueOf("volume")).doubleValue();
 	    	TinySound.setGlobalVolume(volume/100);
