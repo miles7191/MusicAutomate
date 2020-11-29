@@ -31,7 +31,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 public class MusicAutomate extends Application{
 
 	public static void main(String[] args) {
-		new MusicAutomate();
+		new MusicAutomate().start();
 	}
 	
 	private @Getter MAConfig config;
