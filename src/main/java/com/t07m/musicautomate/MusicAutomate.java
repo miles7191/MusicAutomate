@@ -19,7 +19,6 @@ import java.util.logging.Level;
 
 import com.t07m.application.Application;
 import com.t07m.musicautomate.command.SetCommand;
-import com.t07m.musicautomate.command.StopCommand;
 import com.t07m.musicautomate.config.MAConfig;
 import com.t07m.musicautomate.music.MusicBuffer;
 import com.t07m.musicautomate.music.MusicPlayer;
@@ -60,8 +59,7 @@ public class MusicAutomate extends Application{
 		};
 		this.console.getLogger().setLevel(Level.parse(config.getLogger()));
 		this.console.setup();
-		this.console.registerCommand(new StopCommand());
-		this.console.registerCommand(new SetCommand());
+		this.console.registerCommands(new SetCommand());
 		this.console.setLocationRelativeTo(null);
 		this.console.setVisible(true);
 		this.console.getLogger().info("Launching Application.");
