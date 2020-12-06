@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import com.t07m.application.Application;
 import com.t07m.musicautomate.command.SetCommand;
 import com.t07m.musicautomate.config.MAConfig;
+import com.t07m.musicautomate.file.source.MusicSource;
 import com.t07m.musicautomate.music.MusicBuffer;
 import com.t07m.musicautomate.music.MusicPlayer;
 import com.t07m.swing.console.ConsoleWindow;
@@ -37,6 +38,7 @@ public class MusicAutomate extends Application{
 	private @Getter ConsoleWindow console;
 	private @Getter MusicBuffer musicBuffer;
 	private @Getter MusicPlayer musicPlayer;
+	private @Getter MusicSource musicSource;
 	
 	@SuppressWarnings("serial")
 	public void init() {
@@ -52,7 +54,7 @@ public class MusicAutomate extends Application{
 			} catch (InterruptedException e1) {}
 			System.exit(-1);
 		}
-		this.console = new ConsoleWindow("Music Automate") {
+		this.console = new ConsoleWindow("Music Automate", "MusicAutomate") {
 			public void close() {
 				stop();
 			}
@@ -65,6 +67,7 @@ public class MusicAutomate extends Application{
 		this.console.getLogger().info("Launching Application.");
 		this.musicBuffer = new MusicBuffer(this);
 		this.musicPlayer = new MusicPlayer(this);
+		this.musicSource = MusicSource.createSource(this.config);
 		this.registerService(musicBuffer);
 		this.registerService(musicPlayer);
 	}

@@ -17,26 +17,52 @@ package com.t07m.musicautomate.config;
 
 import java.io.File;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.cubespace.Yamler.Config.Comment;
 import net.cubespace.Yamler.Config.YamlConfig;
 
 public class MAConfig extends YamlConfig{
-
+	
+	@Comment("Required External Program paths")
 	private @Getter @Setter String ffmpegPath = "lib/ffmpeg.exe";
 	private @Getter @Setter String ffprobePath = "lib/ffprobe.exe";
-	private @Getter @Setter String sourcePath = "";
+	
+	private @Getter @Setter SourceConfig musicSource = new SourceConfig();
 	private @Getter @Setter String scratchPath = System.getenv("TEMP");
-	private @Getter @Setter String fadeOutType = "Linear";
-	private @Getter @Setter double fadeOutTime = 5.0;
-	private @Getter @Setter String fadeInType = "Linear";
-	private @Getter @Setter double fadeInTime = 5.0;
 	private @Getter @Setter int musicBuffer = 2;
+	
+	@Comment("Fades between music. Available types are Linear & Expoential.")
+	private @Getter @Setter FadeConfig fadeOut = new FadeConfig();
+	private @Getter @Setter FadeConfig fadeIn = new FadeConfig();
+	
+	@Comment("Default logger level.")
 	private @Getter @Setter String logger = "INFO";
 	
 	public MAConfig() {
 		CONFIG_HEADER = new String[]{"MusicAutomate Configuration Data"};
 		CONFIG_FILE = new File("config.yml");
+	}
+	
+	public class SourceConfig extends YamlConfig{
+		
+		private @Getter @Setter String type = "Local";
+		private @Getter @Setter String path = System.getProperty("user.home")+"\\Music";
+		private @Getter @Setter String address;
+		private @Getter @Setter String domain;
+		private @Getter @Setter String username;
+		private @Getter @Setter String password;
+		
+	}
+	
+	@NoArgsConstructor
+	public class FadeConfig extends YamlConfig{
+		
+		private @Getter @Setter String type = "Exponential";
+		private @Getter @Setter double time = 5.0;
+		
 	}
 	
 }

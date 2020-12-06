@@ -30,6 +30,7 @@ import com.t07m.musicautomate.file.AudioFile;
 import com.t07m.musicautomate.file.AudioFileHandler;
 import com.t07m.musicautomate.file.FFmpegHandler;
 import com.t07m.musicautomate.file.FFprobeHandler;
+import com.t07m.musicautomate.file.source.MusicSource;
 
 import kuusisto.tinysound.TinySound;
 import kuusisto.tinysound.internal.MemMusic;
@@ -39,11 +40,11 @@ public class MusicBuffer extends Service<MusicAutomate>{
 	private Random random = new Random();
 	private int count = 0;
 	private ArrayList<AutoMusic> buffer;
-	
+
 	public MusicBuffer(MusicAutomate app) {
 		super(app, TimeUnit.SECONDS.toMillis(1));
 	}
-	
+
 	public void init() {
 		buffer = new ArrayList<AutoMusic>(getBufferSize());
 		TinySound.init();
@@ -53,64 +54,64 @@ public class MusicBuffer extends Service<MusicAutomate>{
 
 	public void process() {
 		if(count < getBufferSize()) {
-			File source = new File(app.getConfig().getSourcePath());
+			MusicSource source = app.getMusicSource();
 			if(source.exists() && source.canRead()) {
-				AudioFile audioFile = getRandomAudioFile(source);
-				if(audioFile != null) {
-					boolean scratched = false;
-					if(!audioFile.format_name().equalsIgnoreCase("wav")) {
-						app.getConsole().getLogger().log(Level.FINEST, "Unable to play AudioFile format: " + new File(audioFile.filename()).getName());
-						File scratch = new File(app.getConfig().getScratchPath());
-						if(scratch.exists() && scratch.canRead() && scratch.canWrite()) {
-							app.getConsole().getLogger().log(Level.FINER, "Converting " + new File(audioFile.filename()).getName() + " to wav.");
-							audioFile = AudioFileHandler.convertAudioFile(audioFile, scratch.getAbsolutePath());
-							scratched = true;
-						}else {
-							app.getConsole().getLogger().log(Level.SEVERE, "Unable to utilize scratch directory!");
-						}
-						if(audioFile != null) {
-							MemMusic music = (MemMusic) TinySound.loadMusic(new File(audioFile.filename()));
-							if(scratched) {
-								try {
-									Files.deleteIfExists(Paths.get(audioFile.filename()));
-								} catch (IOException e) {
-									app.getConsole().getLogger().log(Level.FINE, "Unable to delete scratch file: " + new File(audioFile.filename()).getName());
+				File file = getRandomFile(source);
+				if(file != null) {
+					AudioFile audioFile = AudioFileHandler.getAudioFile(file.getAbsolutePath());
+					if(audioFile != null) {
+						boolean scratched = false;
+						if(!audioFile.format_name().equalsIgnoreCase("wav")) {
+							app.getConsole().getLogger().log(Level.FINEST, "Unable to play AudioFile format: " + new File(audioFile.filename()).getName());
+							File scratch = new File(app.getConfig().getScratchPath());
+							if(scratch.exists() && scratch.canRead() && scratch.canWrite()) {
+								app.getConsole().getLogger().log(Level.FINER, "Converting " + new File(audioFile.filename()).getName() + " to wav.");
+								audioFile = AudioFileHandler.convertAudioFile(audioFile, scratch.getAbsolutePath());
+								scratched = true;
+							}else {
+								app.getConsole().getLogger().log(Level.SEVERE, "Unable to utilize scratch directory!");
+							}
+							if(audioFile != null) {
+								MemMusic music = (MemMusic) TinySound.loadMusic(new File(audioFile.filename()));
+								if(scratched) {
+									try {
+										Files.deleteIfExists(Paths.get(audioFile.filename()));
+									} catch (IOException e) {
+										app.getConsole().getLogger().log(Level.FINE, "Unable to delete scratch file: " + new File(audioFile.filename()).getName());
+									}
+								}
+								if(music != null) {
+									AutoMusic am = new AutoMusic(music, audioFile);
+									buffer.add(am);
+									count++;
+									app.getConsole().getLogger().log(Level.FINE, "Loaded music: " + new File(audioFile.filename()).getName());
+								}else {
+									app.getConsole().getLogger().log(Level.WARNING	, "Failed to load music: " + new File(audioFile.filename()).getName());
 								}
 							}
-							if(music != null) {
-								AutoMusic am = new AutoMusic(music, audioFile);
-								buffer.add(am);
-								count++;
-								app.getConsole().getLogger().log(Level.FINE, "Loaded music: " + new File(audioFile.filename()).getName());
-							}else {
-								app.getConsole().getLogger().log(Level.WARNING	, "Failed to load music: " + new File(audioFile.filename()).getName());
-							}
 						}
+					}else {
+						app.getConsole().getLogger().log(Level.FINER, "Unable to create AudioFile from randomly selected file.");
 					}
+					source.complete(file);
 				}else {
-					app.getConsole().getLogger().log(Level.FINER, "Unable to create AudioFile from randomly selected file.");
+					app.getConsole().getLogger().log(Level.WARNING, "Unable to get files from music source!");
 				}
 			}else {
-				app.getConsole().getLogger().log(Level.WARNING, "Unable to read source directory!");
+				app.getConsole().getLogger().log(Level.WARNING, "Unable to read source!");
 			}
 		}
 	}
-	
-	private AudioFile getRandomAudioFile(File source) {
-		File[] files = source.listFiles();
-		int attempt = 0;
-		while(attempt < 5) {
+
+	private File getRandomFile(MusicSource source) {
+		String[] files = source.listFiles();
+		if(files.length > 0) {
 			var temp = files[random.nextInt(files.length)];
-			if(!temp.isDirectory()) {
-				var af = AudioFileHandler.getAudioFile(temp.getAbsolutePath());
-				if(af != null)
-					return af;	
-			}
-			attempt++;
+			return source.getFile(temp);
 		}
 		return null;
 	}
-	
+
 	public AutoMusic getNext() {
 		if(buffer.size() > 0) {
 			count--;
@@ -118,11 +119,11 @@ public class MusicBuffer extends Service<MusicAutomate>{
 		}
 		return null;
 	}
-	
+
 	private int getBufferSize() {
 		return Math.max(1, app.getConfig().getMusicBuffer());
 	}
-	
+
 	public void cleanup() {
 		for(AutoMusic music : buffer) {
 			music.getTinyMusic().unload();

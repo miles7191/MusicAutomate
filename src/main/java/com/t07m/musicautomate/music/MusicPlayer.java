@@ -39,28 +39,32 @@ public class MusicPlayer extends Service<MusicAutomate>{
 
 	public void init() {
 		TinySound.init();
-		Fade in, out;
+		Fade in = null, out = null;
 		MAConfig config = app.getConfig();
-		switch(config.getFadeInType().toLowerCase()) {
-		case "linear":
-			in = new LinearFade(config.getFadeInTime());
-			break;
-		case "exponential":
-			in = new ExponentialFade(config.getFadeInTime());
-			break;
-			default:
-				in = new LinearFade(0);
+		if(config.getFadeIn() != null) {
+			switch(config.getFadeIn().getType().toLowerCase()){
+			case "linear":
+				in = new LinearFade(config.getFadeIn().getTime());
+				break;
+			case "exponential":
+				in = new ExponentialFade(config.getFadeIn().getTime());
+				break;
+			}
 		}
-		switch(config.getFadeOutType().toLowerCase()) {
-		case "linear":
-			out = new LinearFade(config.getFadeOutTime());
-			break;
-		case "exponential":
-			out = new ExponentialFade(config.getFadeOutTime());
-			break;
-			default:
-				out = new LinearFade(0);
+		if(config.getFadeOut() != null) {
+			switch(config.getFadeOut().getType().toLowerCase()){
+			case "linear":
+				out = new LinearFade(config.getFadeOut().getTime());
+				break;
+			case "exponential":
+				out = new ExponentialFade(config.getFadeOut().getTime());
+				break;
+			}
 		}
+		if(in == null)
+			in = new LinearFade(0);
+		if(out == null)
+			out = new LinearFade(0);
 		transition = new Transition(in, out);
 	}
 
