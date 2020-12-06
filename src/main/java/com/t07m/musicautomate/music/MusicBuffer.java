@@ -64,6 +64,7 @@ public class MusicBuffer extends Service<MusicAutomate>{
 						if(!audioFile.format_name().equalsIgnoreCase("wav")) {
 							app.getConsole().getLogger().log(Level.FINEST, "Unable to play AudioFile format: " + new File(audioFile.filename()).getName());
 							File scratch = new File(app.getConfig().getScratchPath());
+							scratch.deleteOnExit();
 							if(scratch.exists() && scratch.canRead() && scratch.canWrite()) {
 								app.getConsole().getLogger().log(Level.FINER, "Converting " + new File(audioFile.filename()).getName() + " to wav.");
 								audioFile = AudioFileHandler.convertAudioFile(audioFile, scratch.getAbsolutePath());

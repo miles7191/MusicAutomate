@@ -38,14 +38,14 @@ public class AudioFileHandler {
 		name = name.substring(0, name.length()-source.format_name().length()-1);
 		if(FFmpegHandler.convert(
 				source.filename(),
-				scratch + "\\" + name + ".wav", 
+				scratch + "/" + name + ".wav", 
 				true, 
 				"wav", 
 				1, 
-				44100, 
+				48000, 
 				16384
 				)) {
-			return getAudioFile(scratch + "\\" + name + ".wav");
+			return getAudioFile(scratch + "/" + name + ".wav");
 		}
 		return null;
 	}

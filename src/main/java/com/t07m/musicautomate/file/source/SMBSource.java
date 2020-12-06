@@ -89,7 +89,7 @@ public class SMBSource extends MusicSource{
 		try(SmbResource res = getContext().get(getRemoteURL())){
 			try(SmbResource child = res.resolve(name)){
 				if(child != null) {
-					file = new File(scratchPath + "\\" + name);
+					file = new File(scratchPath + "/" + name);
 					file.createNewFile();
 					FileOutputStream fos = new FileOutputStream(file);
 					IOUtils.copyLarge(child.openInputStream(), fos);

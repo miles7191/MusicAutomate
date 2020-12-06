@@ -16,6 +16,8 @@
 package com.t07m.musicautomate.file;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
@@ -28,30 +30,39 @@ public class FFmpegHandler {
 	private static FFmpeg staticFFmpeg;
 
 	public static boolean convert(String input, String output, boolean override, String format, int channels, int sampleRate, int bitRate) {
-		FFmpeg ffmpeg = getFFmpeg();
-		if(ffmpeg != null) {
-			try {
-				FFmpegBuilder builder = new FFmpegBuilder()
+		var afin = AudioFileHandler.getAudioFile(input);
+		if(afin != null) {
+			FFmpeg ffmpeg = getFFmpeg();
+			if(ffmpeg != null) {
+				try {
+					FFmpegBuilder builder = new FFmpegBuilder()
 
-						.setInput(input)
-						.overrideOutputFiles(override)
-						.addOutput(output)
-						.setFormat(format)
-						.setAudioChannels(channels)
-						.setAudioSampleRate(sampleRate)
-						.setAudioBitRate(bitRate)
-						.done();
+							.setInput(input)
+							.overrideOutputFiles(override)
+							.addOutput(output)
+							.setFormat(format)
+							.setAudioChannels(channels)
+							.setAudioSampleRate(sampleRate)
+							.setAudioBitRate(bitRate)
+							.done();
 
-				FFmpegExecutor executor = new FFmpegExecutor(ffmpeg);
-				FFmpegJob job = executor.createJob(builder);
-				job.run();
-				if(job.getState() == FFmpegJob.State.FINISHED) {
-					return true;
-				}			
-			} catch (IOException e) {
-				e.printStackTrace();
+					FFmpegExecutor executor = new FFmpegExecutor(ffmpeg);
+					FFmpegJob job = executor.createJob(builder);
+					job.run();
+					if(job.getState() == FFmpegJob.State.FINISHED) {
+						var afout = AudioFileHandler.getAudioFile(output);
+						if(afout != null && Math.abs(afin.duration()-afout.duration()) < 0.1) {
+							return true;
+						}
+					}			
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
+		try {
+			Files.deleteIfExists(Paths.get(output));
+		} catch (IOException e) {}
 		return false;
 	}
 

@@ -70,11 +70,11 @@ public class TinySound {
 	 */
 	public static final AudioFormat FORMAT = new AudioFormat(
 			AudioFormat.Encoding.PCM_SIGNED, //linear signed PCM
-			44100, //44.1kHz sampling rate
+			48000, //44.1kHz sampling rate
 			16, //16-bit
 			2, //2 channels fool
 			4, //frame size 4 bytes (16-bit, 2 channel)
-			44100, //same as sampling rate
+			48000, //same as sampling rate
 			false //little-endian
 			);
 	
@@ -585,13 +585,13 @@ public class TinySound {
 			AudioFormat streamFormat = audioStream.getFormat();
 			//1-channel can also be treated as stereo
 			AudioFormat mono16 = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
-					44100, 16, 1, 2, 44100, false);
+					48000, 16, 1, 2, 48000, false);
 			//1 or 2 channel 8-bit may be easy to convert
 			AudioFormat mono8 =	new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
-					44100, 8, 1, 1, 44100, false);
+					48000, 8, 1, 1, 48000, false);
 			AudioFormat stereo8 =
-				new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 8, 2, 2,
-					44100, false);
+				new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 48000, 8, 2, 2,
+					48000, false);
 			//now check formats (attempt conversion as needed)
 			if (streamFormat.matches(TinySound.FORMAT) ||
 					streamFormat.matches(mono16)) {
@@ -695,7 +695,7 @@ public class TinySound {
 			try { stream.close(); } catch (IOException e) {}
 		}
 		AudioFormat mono16 = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
-				44100, 16, 1, 2, 44100, false);
+				48000, 16, 1, 2, 48000, false);
 		return new AudioInputStream(new ByteArrayInputStream(newData), mono16,
 				newData.length / 2);
 	}
@@ -755,7 +755,7 @@ public class TinySound {
 			try { stream.close(); } catch (IOException e) {}
 		}
 		AudioFormat stereo16 = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
-				44100, 16, 2, 4, 44100, false);
+				48000, 16, 2, 4, 48000, false);
 		return new AudioInputStream(new ByteArrayInputStream(newData), stereo16,
 				newData.length / 4);
 	}

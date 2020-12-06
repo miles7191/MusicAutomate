@@ -79,6 +79,7 @@ public class MusicAutomate extends Application{
 			cw.setup();
 			cw.setLocationRelativeTo(null);
 			cw.setVisible(true);
+			this.console = cw;
 		}else {
 			this.console = new NativeConsole("MusicAutomate") {
 				public void close() {
@@ -88,8 +89,10 @@ public class MusicAutomate extends Application{
 			this.console.setup();
 		}
 		this.console.getLogger().setLevel(Level.parse(config.getLogger()));
-		this.console.suppressSystemErr();
-		this.console.suppressSystemOut();
+		if(this.getConsole().getLogger().getLevel().intValue() >= 800) {
+			this.console.suppressSystemErr();
+			this.console.suppressSystemOut();
+		}
 		this.console.registerCommands(new SetCommand());
 		this.console.getLogger().info("Launching Application.");
 		this.musicBuffer = new MusicBuffer(this);

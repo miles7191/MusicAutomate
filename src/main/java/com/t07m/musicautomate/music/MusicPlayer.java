@@ -34,7 +34,7 @@ public class MusicPlayer extends Service<MusicAutomate>{
 	private Transition transition;
 
 	public MusicPlayer(MusicAutomate app) {
-		super(app, 100);
+		super(app, 200);
 	}
 
 	public void init() {
@@ -77,10 +77,13 @@ public class MusicPlayer extends Service<MusicAutomate>{
 		if(current != null) {
 			if(current.getTinyMusic().playing()) {
 				double durationLeft = (current.getTinyMusic().getDuration() - current.getTinyMusic().getCurrentPosition())/ 1000.0;
-				if(durationLeft < transition.getLength()) {
-					if(!transition.isTransitioning()) {
-						app.getConsole().getLogger().log(Level.FINER, "Begining transition to " + new File(next.getAudioFile().filename()).getName());
-						transition.start(current, next);
+				app.getConsole().getLogger().log(Level.FINEST, "Current Remaining: " + durationLeft);
+				if(transition != null && next != null) {
+					if(durationLeft < transition.getLength()) {
+						if(!transition.isTransitioning()) {
+							app.getConsole().getLogger().log(Level.FINER, "Begining transition to " + new File(next.getAudioFile().filename()).getName());
+							transition.start(current, next);
+						}
 					}
 				}
 			}else if(!current.getTinyMusic().done()) {
