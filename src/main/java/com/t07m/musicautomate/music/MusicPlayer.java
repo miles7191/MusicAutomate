@@ -36,7 +36,7 @@ public class MusicPlayer extends Service<MusicAutomate>{
 	private long lastRemaining = 0;
 
 	public MusicPlayer(MusicAutomate app) {
-		super(app, 100);
+		super(app, 200);
 	}
 
 	public void init() {

@@ -41,6 +41,9 @@ import kuusisto.tinysound.TinySound;
  * @author Finn Kuusisto
  */
 public class UpdateRunner implements Runnable {
+		
+		private final static long maxLineBuffer = 1000;
+		private final static long targetSleepTime = (int) (maxLineBuffer * .25);
 	
 		private AtomicBoolean running;
 		private SourceDataLine outLine;
@@ -72,9 +75,9 @@ public class UpdateRunner implements Runnable {
 			int bufSize = (int)TinySound.FORMAT.getFrameRate() *
 				TinySound.FORMAT.getFrameSize();
 			byte[] audioBuffer = new byte[bufSize];
-			//only buffer some maximum number of frames each update (25ms)
+			//only buffer some maximum number of frames each update (x ms)
 			int maxFramesPerUpdate = 
-				(int)((TinySound.FORMAT.getFrameRate() / 1000) * 25);
+				(int)((TinySound.FORMAT.getFrameRate() / 1000) * maxLineBuffer);
 			int numBytesRead = 0;
 			double framesAccrued = 0;
 			long lastUpdate = System.nanoTime();
@@ -126,7 +129,7 @@ public class UpdateRunner implements Runnable {
 				lastUpdate = currTime;
 				//give the CPU back to the OS for a bit
 				try {
-					Thread.sleep(1);
+					Thread.sleep(Math.max(TimeUnit.NANOSECONDS.toMillis(TimeUnit.MILLISECONDS.toNanos(targetSleepTime)-(System.nanoTime()-currTime)),1));
 				} catch (InterruptedException e) {}
 			}
 		}
