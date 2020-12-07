@@ -33,8 +33,10 @@ public class MusicPlayer extends Service<MusicAutomate>{
 	private AutoMusic current, next;
 	private Transition transition;
 
+	private long lastRemaining = 0;
+
 	public MusicPlayer(MusicAutomate app) {
-		super(app, 200);
+		super(app, 100);
 	}
 
 	public void init() {
@@ -77,7 +79,10 @@ public class MusicPlayer extends Service<MusicAutomate>{
 		if(current != null) {
 			if(current.getTinyMusic().playing()) {
 				double durationLeft = (current.getTinyMusic().getDuration() - current.getTinyMusic().getCurrentPosition())/ 1000.0;
-				app.getConsole().getLogger().log(Level.FINEST, "Current Remaining: " + durationLeft);
+				if(System.currentTimeMillis() - lastRemaining > 1000) {
+					app.getConsole().getLogger().log(Level.FINEST, "Current Remaining: " + durationLeft);
+					lastRemaining = System.currentTimeMillis();
+				}
 				if(transition != null && next != null) {
 					if(durationLeft < transition.getLength()) {
 						if(!transition.isTransitioning()) {
@@ -94,7 +99,9 @@ public class MusicPlayer extends Service<MusicAutomate>{
 				app.getConsole().getLogger().log(Level.FINE	, "Unloaded: " + new File(current.getAudioFile().filename()).getName());
 				current = next;
 				next = null;
-				app.getConsole().getLogger().log(Level.INFO	, "Now Playing: " + new File(current.getAudioFile().filename()).getName());
+				if(current != null) {
+					app.getConsole().getLogger().log(Level.INFO	, "Now Playing: " + new File(current.getAudioFile().filename()).getName());
+				}
 			}
 		}
 	}
