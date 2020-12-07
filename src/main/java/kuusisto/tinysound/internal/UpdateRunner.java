@@ -25,6 +25,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package kuusisto.tinysound.internal;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.sound.sampled.SourceDataLine;
@@ -41,6 +42,8 @@ import kuusisto.tinysound.TinySound;
  */
 public class UpdateRunner implements Runnable {
 		
+		private final static long targetSleepTime = 15;
+	
 		private AtomicBoolean running;
 		private SourceDataLine outLine;
 		private Mixer mixer;
@@ -125,7 +128,7 @@ public class UpdateRunner implements Runnable {
 				lastUpdate = currTime;
 				//give the CPU back to the OS for a bit
 				try {
-					Thread.sleep(1);
+					Thread.sleep(Math.max(TimeUnit.NANOSECONDS.toMillis(TimeUnit.MILLISECONDS.toNanos(targetSleepTime)-(System.nanoTime()-currTime)),0));
 				} catch (InterruptedException e) {}
 			}
 		}
