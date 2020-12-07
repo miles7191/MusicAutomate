@@ -41,8 +41,6 @@ import kuusisto.tinysound.TinySound;
  * @author Finn Kuusisto
  */
 public class UpdateRunner implements Runnable {
-		
-		private final static long targetSleepTime = 10;
 	
 		private AtomicBoolean running;
 		private SourceDataLine outLine;
@@ -128,7 +126,7 @@ public class UpdateRunner implements Runnable {
 				lastUpdate = currTime;
 				//give the CPU back to the OS for a bit
 				try {
-					Thread.sleep(Math.max(TimeUnit.NANOSECONDS.toMillis(TimeUnit.MILLISECONDS.toNanos(targetSleepTime)-(System.nanoTime()-currTime)),0));
+					Thread.sleep(1);
 				} catch (InterruptedException e) {}
 			}
 		}
