@@ -42,7 +42,7 @@ import kuusisto.tinysound.TinySound;
  */
 public class UpdateRunner implements Runnable {
 		
-		private final static long targetSleepTime = 15;
+		private final static long targetSleepTime = 10;
 	
 		private AtomicBoolean running;
 		private SourceDataLine outLine;
