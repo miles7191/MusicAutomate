@@ -60,8 +60,8 @@ public class Transition {
 					}
 				}
 			};
-			t.start();
 			transitioning = true;
+			t.start();
 		}
 	}	
 }
