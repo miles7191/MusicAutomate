@@ -79,10 +79,6 @@ public class MusicPlayer extends Service<MusicAutomate>{
 		if(current != null) {
 			if(current.getTinyMusic().playing()) {
 				double durationLeft = (current.getTinyMusic().getDuration() - current.getTinyMusic().getCurrentPosition())/ 1000.0;
-				if(System.currentTimeMillis() - lastRemaining > 1000) {
-					app.getConsole().getLogger().log(Level.FINEST, "Current Remaining: " + durationLeft);
-					lastRemaining = System.currentTimeMillis();
-				}
 				if(transition != null && next != null) {
 					if(durationLeft < transition.getLength()) {
 						if(!transition.isTransitioning()) {
