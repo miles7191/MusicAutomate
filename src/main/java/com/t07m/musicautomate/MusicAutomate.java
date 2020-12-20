@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import com.t07m.application.Application;
 import com.t07m.console.Console;
 import com.t07m.console.NativeConsole;
+import com.t07m.musicautomate.command.DumpCommand;
 import com.t07m.musicautomate.command.SetCommand;
 import com.t07m.musicautomate.config.MAConfig;
 import com.t07m.musicautomate.file.source.MusicSource;
@@ -28,8 +29,10 @@ import com.t07m.musicautomate.music.MusicPlayer;
 import com.t07m.swing.console.ConsoleWindow;
 
 import lombok.Getter;
+import lombok.ToString;
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
 
+@ToString(callSuper = true)
 public class MusicAutomate extends Application{
 
 	public static void main(String[] args) {
@@ -47,8 +50,11 @@ public class MusicAutomate extends Application{
 	private final boolean gui;
 
 	private @Getter MAConfig config;
+	@ToString.Exclude
 	private @Getter Console console;
+	@ToString.Exclude
 	private @Getter MusicBuffer musicBuffer;
+	@ToString.Exclude
 	private @Getter MusicPlayer musicPlayer;
 	private @Getter MusicSource musicSource;
 
@@ -93,7 +99,7 @@ public class MusicAutomate extends Application{
 			this.console.suppressSystemErr();
 			this.console.suppressSystemOut();
 		}
-		this.console.registerCommands(new SetCommand());
+		this.console.registerCommands(new SetCommand(), new DumpCommand(this));
 		this.console.getLogger().info("Launching Application.");
 		this.musicBuffer = new MusicBuffer(this);
 		this.musicPlayer = new MusicPlayer(this);

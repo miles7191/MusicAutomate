@@ -17,13 +17,14 @@ package com.t07m.musicautomate.config;
 
 import java.io.File;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import net.cubespace.Yamler.Config.Comment;
 import net.cubespace.Yamler.Config.YamlConfig;
 
+@ToString
 public class MAConfig extends YamlConfig{
 	
 	@Comment("Required External Program paths")
@@ -46,6 +47,7 @@ public class MAConfig extends YamlConfig{
 		CONFIG_FILE = new File("config.yml");
 	}
 	
+	@ToString
 	public class SourceConfig extends YamlConfig{
 		
 		private @Getter @Setter String type = "Local";
@@ -53,10 +55,12 @@ public class MAConfig extends YamlConfig{
 		private @Getter @Setter String address;
 		private @Getter @Setter String domain;
 		private @Getter @Setter String username;
+		@ToString.Exclude
 		private @Getter @Setter String password;
 		
 	}
 	
+	@ToString
 	@NoArgsConstructor
 	public class FadeConfig extends YamlConfig{
 		

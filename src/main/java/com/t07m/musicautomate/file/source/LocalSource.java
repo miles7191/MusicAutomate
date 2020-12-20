@@ -20,7 +20,9 @@ import java.io.FilenameFilter;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+@ToString
 @RequiredArgsConstructor
 public class LocalSource extends MusicSource{
 

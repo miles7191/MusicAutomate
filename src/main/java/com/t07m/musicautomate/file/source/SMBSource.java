@@ -32,12 +32,15 @@ import jcifs.context.SingletonContext;
 import jcifs.smb.NtlmPasswordAuthenticator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+@ToString
 @RequiredArgsConstructor
 public class SMBSource extends MusicSource{
 
 	private final String domain;
 	private final String username;
+	@ToString.Exclude
 	private final String password;
 	private final @Getter String address;
 	private final @Getter String path;

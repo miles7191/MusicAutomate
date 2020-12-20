@@ -19,7 +19,9 @@ import com.t07m.musicautomate.music.AutoMusic;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+@ToString
 @RequiredArgsConstructor
 public abstract class Fade {
 	

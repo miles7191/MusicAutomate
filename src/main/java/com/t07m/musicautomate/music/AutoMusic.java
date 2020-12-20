@@ -21,7 +21,9 @@ import kuusisto.tinysound.internal.MemMusic;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+@ToString
 @RequiredArgsConstructor
 public class AutoMusic {
 

@@ -27,13 +27,13 @@ import com.t07m.musicautomate.music.transition.LinearFade;
 import com.t07m.musicautomate.music.transition.Transition;
 
 import kuusisto.tinysound.TinySound;
+import lombok.ToString;
 
+@ToString(callSuper = true)
 public class MusicPlayer extends Service<MusicAutomate>{
 
 	private AutoMusic current, next;
 	private Transition transition;
-
-	private long lastRemaining = 0;
 
 	public MusicPlayer(MusicAutomate app) {
 		super(app, 200);
@@ -42,7 +42,7 @@ public class MusicPlayer extends Service<MusicAutomate>{
 	public void init() {
 		TinySound.init();
 		Fade in = null, out = null;
-		MAConfig config = app.getConfig();
+		MAConfig config = getApp().getConfig();
 		if(config.getFadeIn() != null) {
 			switch(config.getFadeIn().getType().toLowerCase()){
 			case "linear":
@@ -72,9 +72,9 @@ public class MusicPlayer extends Service<MusicAutomate>{
 
 	public void process() {
 		if(current == null) {
-			current = app.getMusicBuffer().getNext();
+			current = getApp().getMusicBuffer().getNext();
 		}else if(next == null) {
-			next = app.getMusicBuffer().getNext();
+			next = getApp().getMusicBuffer().getNext();
 		}
 		if(current != null) {
 			if(current.getTinyMusic().playing()) {
@@ -82,21 +82,21 @@ public class MusicPlayer extends Service<MusicAutomate>{
 				if(transition != null && next != null) {
 					if(durationLeft < transition.getLength()) {
 						if(!transition.isTransitioning()) {
-							app.getConsole().getLogger().log(Level.FINER, "Begining transition to " + new File(next.getAudioFile().filename()).getName());
+							getApp().getConsole().getLogger().log(Level.FINER, "Begining transition to " + new File(next.getAudioFile().filename()).getName());
 							transition.start(current, next);
 						}
 					}
 				}
 			}else if(!current.getTinyMusic().done()) {
 				current.getTinyMusic().play(false);
-				app.getConsole().getLogger().log(Level.INFO	, "Now Playing: " + new File(current.getAudioFile().filename()).getName());
+				getApp().getConsole().getLogger().log(Level.INFO	, "Now Playing: " + new File(current.getAudioFile().filename()).getName());
 			}else {
 				current.getTinyMusic().unload();
-				app.getConsole().getLogger().log(Level.FINE	, "Unloaded: " + new File(current.getAudioFile().filename()).getName());
+				getApp().getConsole().getLogger().log(Level.FINE	, "Unloaded: " + new File(current.getAudioFile().filename()).getName());
 				current = next;
 				next = null;
 				if(current != null) {
-					app.getConsole().getLogger().log(Level.INFO	, "Now Playing: " + new File(current.getAudioFile().filename()).getName());
+					getApp().getConsole().getLogger().log(Level.INFO	, "Now Playing: " + new File(current.getAudioFile().filename()).getName());
 				}
 			}
 		}

@@ -21,7 +21,9 @@ import com.t07m.musicautomate.config.MAConfig;
 import com.t07m.musicautomate.config.MAConfig.SourceConfig;
 
 import lombok.Getter;
+import lombok.ToString;
 
+@ToString
 public abstract class MusicSource {
 
 	private static @Getter String[] FileFormats = {"mp3", "m4a", "flac", "ogg", "mp4", "wav", "wma", "aac"};

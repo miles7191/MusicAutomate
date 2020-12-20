@@ -17,6 +17,9 @@ package com.t07m.musicautomate.music.transition;
 
 import com.t07m.musicautomate.music.AutoMusic;
 
+import lombok.ToString;
+
+@ToString
 public class ExponentialFade extends Fade{
 
 	private final int expo = 25;

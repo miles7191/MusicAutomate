@@ -34,9 +34,12 @@ import com.t07m.musicautomate.file.source.MusicSource;
 
 import kuusisto.tinysound.TinySound;
 import kuusisto.tinysound.internal.MemMusic;
+import lombok.ToString;
 
+@ToString(callSuper = true)
 public class MusicBuffer extends Service<MusicAutomate>{
 
+	@ToString.Exclude
 	private Random random = new Random();
 	private int count = 0;
 	private ArrayList<AutoMusic> buffer;
@@ -48,13 +51,13 @@ public class MusicBuffer extends Service<MusicAutomate>{
 	public void init() {
 		buffer = new ArrayList<AutoMusic>(getBufferSize());
 		TinySound.init();
-		FFprobeHandler.setPath(app.getConfig().getFfprobePath());
-		FFmpegHandler.setPath(app.getConfig().getFfmpegPath());
+		FFprobeHandler.setPath(getApp().getConfig().getFfprobePath());
+		FFmpegHandler.setPath(getApp().getConfig().getFfmpegPath());
 	}
 
 	public void process() {
 		if(count < getBufferSize()) {
-			MusicSource source = app.getMusicSource();
+			MusicSource source = getApp().getMusicSource();
 			if(source.exists() && source.canRead()) {
 				File file = getRandomFile(source);
 				if(file != null) {
@@ -62,14 +65,14 @@ public class MusicBuffer extends Service<MusicAutomate>{
 					if(audioFile != null) {
 						boolean scratched = false;
 						if(!audioFile.format_name().equalsIgnoreCase("wav")) {
-							app.getConsole().getLogger().log(Level.FINEST, "Unable to play AudioFile format: " + new File(audioFile.filename()).getName());
-							File scratchPath = new File(app.getConfig().getScratchPath());
+							getApp().getConsole().getLogger().log(Level.FINEST, "Unable to play AudioFile format: " + new File(audioFile.filename()).getName());
+							File scratchPath = new File(getApp().getConfig().getScratchPath());
 							if(scratchPath.exists() && scratchPath.canRead() && scratchPath.canWrite()) {
-								app.getConsole().getLogger().log(Level.FINER, "Converting " + new File(audioFile.filename()).getName() + " to wav.");
+								getApp().getConsole().getLogger().log(Level.FINER, "Converting " + new File(audioFile.filename()).getName() + " to wav.");
 								audioFile = AudioFileHandler.convertAudioFile(audioFile, scratchPath.getAbsolutePath());
 								scratched = true;
 							}else {
-								app.getConsole().getLogger().log(Level.SEVERE, "Unable to utilize scratch directory!");
+								getApp().getConsole().getLogger().log(Level.SEVERE, "Unable to utilize scratch directory!");
 							}
 							if(audioFile != null) {
 								MemMusic music = (MemMusic) TinySound.loadMusic(new File(audioFile.filename()));
@@ -77,28 +80,28 @@ public class MusicBuffer extends Service<MusicAutomate>{
 									try {
 										Files.deleteIfExists(Paths.get(audioFile.filename()));
 									} catch (IOException e) {
-										app.getConsole().getLogger().log(Level.FINE, "Unable to delete scratch file: " + new File(audioFile.filename()).getName());
+										getApp().getConsole().getLogger().log(Level.FINE, "Unable to delete scratch file: " + new File(audioFile.filename()).getName());
 									}
 								}
 								if(music != null) {
 									AutoMusic am = new AutoMusic(music, audioFile);
 									buffer.add(am);
 									count++;
-									app.getConsole().getLogger().log(Level.FINE, "Loaded music: " + new File(audioFile.filename()).getName());
+									getApp().getConsole().getLogger().log(Level.FINE, "Loaded music: " + new File(audioFile.filename()).getName());
 								}else {
-									app.getConsole().getLogger().log(Level.WARNING	, "Failed to load music: " + new File(audioFile.filename()).getName());
+									getApp().getConsole().getLogger().log(Level.WARNING	, "Failed to load music: " + new File(audioFile.filename()).getName());
 								}
 							}
 						}
 					}else {
-						app.getConsole().getLogger().log(Level.FINER, "Unable to create AudioFile from randomly selected file.");
+						getApp().getConsole().getLogger().log(Level.FINER, "Unable to create AudioFile from randomly selected file.");
 					}
 					source.complete(file);
 				}else {
-					app.getConsole().getLogger().log(Level.WARNING, "Unable to get files from music source!");
+					getApp().getConsole().getLogger().log(Level.WARNING, "Unable to get files from music source!");
 				}
 			}else {
-				app.getConsole().getLogger().log(Level.WARNING, "Unable to read source!");
+				getApp().getConsole().getLogger().log(Level.WARNING, "Unable to read source!");
 			}
 		}
 	}
@@ -121,7 +124,7 @@ public class MusicBuffer extends Service<MusicAutomate>{
 	}
 
 	private int getBufferSize() {
-		return Math.max(1, app.getConfig().getMusicBuffer());
+		return Math.max(1, getApp().getConfig().getMusicBuffer());
 	}
 
 	public void cleanup() {

@@ -17,9 +17,10 @@ package com.t07m.musicautomate.file;
 
 import java.util.Map;
 
-import lombok.Getter;
+import lombok.ToString;
 import net.bramp.ffmpeg.probe.FFmpegFormat;
 
+@ToString
 public class AudioFile {
 
 	private final FFmpegFormat format;
@@ -71,15 +72,5 @@ public class AudioFile {
 	public Map<String, String> tags(){
 		return format.tags;
 	}
-
-	@Override
-	public String toString() {
-		return "AudioFile [filename=" + filename() + ", nb_streams=" + nb_streams() + ", nb_programs="
-				+ nb_programs() + ", format_name=" + format_name() + ", format_long_name=" + format_long_name()
-				+ ", start_time=" + start_time() + ", duration=" + duration() + ", size=" + size()
-				+ ", bit_rate=" + bit_rate() + ", probe_score=" + probe_score() + ", tags=" + tags()
-				+ "]";
-	}	
-	
 	
 }

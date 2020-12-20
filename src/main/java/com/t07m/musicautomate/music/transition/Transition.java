@@ -20,7 +20,9 @@ import com.t07m.musicautomate.music.transition.Fade.Direction;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+@ToString
 @RequiredArgsConstructor
 public class Transition {
 
