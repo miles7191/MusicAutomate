@@ -24,6 +24,9 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.application.Service;
 import com.t07m.musicautomate.MusicAutomate;
 import com.t07m.musicautomate.file.AudioFile;
@@ -39,6 +42,8 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class MusicBuffer extends Service<MusicAutomate>{
 
+	private static Logger logger = LoggerFactory.getLogger(MusicBuffer.class);
+	
 	@ToString.Exclude
 	private Random random = new Random();
 	private int count = 0;
@@ -65,14 +70,14 @@ public class MusicBuffer extends Service<MusicAutomate>{
 					if(audioFile != null) {
 						boolean scratched = false;
 						if(!audioFile.format_name().equalsIgnoreCase("wav")) {
-							getApp().getConsole().getLogger().log(Level.FINEST, "Unable to play AudioFile format: " + new File(audioFile.filename()).getName());
+							logger.debug("Unable to play AudioFile format: " + new File(audioFile.filename()).getName());
 							File scratchPath = new File(getApp().getConfig().getScratchPath());
 							if(scratchPath.exists() && scratchPath.canRead() && scratchPath.canWrite()) {
-								getApp().getConsole().getLogger().log(Level.FINER, "Converting " + new File(audioFile.filename()).getName() + " to wav.");
+								logger.debug("Converting " + new File(audioFile.filename()).getName() + " to wav.");
 								audioFile = AudioFileHandler.convertAudioFile(audioFile, scratchPath.getAbsolutePath());
 								scratched = true;
 							}else {
-								getApp().getConsole().getLogger().log(Level.SEVERE, "Unable to utilize scratch directory!");
+								logger.error("Unable to utilize scratch directory!");
 							}
 							if(audioFile != null) {
 								MemMusic music = (MemMusic) TinySound.loadMusic(new File(audioFile.filename()));
@@ -80,28 +85,28 @@ public class MusicBuffer extends Service<MusicAutomate>{
 									try {
 										Files.deleteIfExists(Paths.get(audioFile.filename()));
 									} catch (IOException e) {
-										getApp().getConsole().getLogger().log(Level.FINE, "Unable to delete scratch file: " + new File(audioFile.filename()).getName());
+										logger.debug("Unable to delete scratch file: " + new File(audioFile.filename()).getName());
 									}
 								}
 								if(music != null) {
 									AutoMusic am = new AutoMusic(music, audioFile);
 									buffer.add(am);
 									count++;
-									getApp().getConsole().getLogger().log(Level.FINE, "Loaded music: " + new File(audioFile.filename()).getName());
+									logger.debug("Loaded music: " + new File(audioFile.filename()).getName());
 								}else {
-									getApp().getConsole().getLogger().log(Level.WARNING	, "Failed to load music: " + new File(audioFile.filename()).getName());
+									logger.warn("Failed to load music: " + new File(audioFile.filename()).getName());
 								}
 							}
 						}
 					}else {
-						getApp().getConsole().getLogger().log(Level.FINER, "Unable to create AudioFile from randomly selected file.");
+						logger.debug("Unable to create AudioFile from randomly selected file.");
 					}
 					source.complete(file);
 				}else {
-					getApp().getConsole().getLogger().log(Level.WARNING, "Unable to get files from music source!");
+					logger.error("Unable to get files from music source!");
 				}
 			}else {
-				getApp().getConsole().getLogger().log(Level.WARNING, "Unable to read source!");
+				logger.error("Unable to read source!");
 			}
 		}
 	}

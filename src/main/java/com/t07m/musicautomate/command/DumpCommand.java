@@ -15,6 +15,9 @@
  */
 package com.t07m.musicautomate.command;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.console.Command;
 import com.t07m.console.Console;
 import com.t07m.musicautomate.MusicAutomate;
@@ -23,6 +26,8 @@ import joptsimple.OptionSet;
 
 public class DumpCommand extends Command{
 
+	private static Logger logger = LoggerFactory.getLogger(DumpCommand.class);
+	
 	private final MusicAutomate musicAutomate;
 	
 	public DumpCommand(MusicAutomate musicAutomate) {
@@ -31,10 +36,10 @@ public class DumpCommand extends Command{
 	}
 
 	public void process(OptionSet optionSet, Console console) {
-		console.getLogger().info("*** Debug Dump " + System.currentTimeMillis() + " ***");
-		console.getLogger().info(musicAutomate.toString());
-		console.getLogger().info("*** End Debug Dump ***");
-		
+		logger.info(
+				"*** Debug Dump " + System.currentTimeMillis() + " ***" + System.lineSeparator() + 
+				musicAutomate.toString() + System.lineSeparator() + 
+				"*** End Debug Dump ***");		
 	}
 
 }

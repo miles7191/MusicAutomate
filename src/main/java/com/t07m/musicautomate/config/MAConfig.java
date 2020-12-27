@@ -39,9 +39,6 @@ public class MAConfig extends YamlConfig{
 	private @Getter @Setter FadeConfig fadeOut = new FadeConfig();
 	private @Getter @Setter FadeConfig fadeIn = new FadeConfig();
 	
-	@Comment("Default logger level.")
-	private @Getter @Setter String logger = "INFO";
-	
 	public MAConfig() {
 		CONFIG_HEADER = new String[]{"MusicAutomate Configuration Data"};
 		CONFIG_FILE = new File("config.yml");

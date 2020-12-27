@@ -17,6 +17,9 @@ package com.t07m.musicautomate.command;
 
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.console.Command;
 import com.t07m.console.Console;
 
@@ -26,6 +29,8 @@ import kuusisto.tinysound.TinySound;
 
 public class SetCommand extends Command{
 
+	private static Logger logger = LoggerFactory.getLogger(SetCommand.class);
+	
 	public SetCommand() {
 		super("Set");
 		OptionParser op = new OptionParser();
@@ -39,7 +44,7 @@ public class SetCommand extends Command{
 	    if(optionSet.has("volume")) {
 	    	double volume = ((Double) optionSet.valueOf("volume")).doubleValue();
 	    	TinySound.setGlobalVolume(volume/100);
-	    	console.getLogger().info("Volume: " + (int) (TinySound.getGlobalVolume()*100) + "%");
+	    	logger.info("Volume: " + (int) (TinySound.getGlobalVolume()*100) + "%");
 	    }
 	  }	
 	

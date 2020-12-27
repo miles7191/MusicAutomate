@@ -18,6 +18,9 @@ package com.t07m.musicautomate.music;
 import java.io.File;
 import java.util.logging.Level;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.application.Service;
 import com.t07m.musicautomate.MusicAutomate;
 import com.t07m.musicautomate.config.MAConfig;
@@ -32,6 +35,8 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class MusicPlayer extends Service<MusicAutomate>{
 
+	private static Logger logger = LoggerFactory.getLogger(MusicPlayer.class);
+	
 	private AutoMusic current, next;
 	private Transition transition;
 
@@ -82,21 +87,21 @@ public class MusicPlayer extends Service<MusicAutomate>{
 				if(transition != null && next != null) {
 					if(durationLeft < transition.getLength()) {
 						if(!transition.isTransitioning()) {
-							getApp().getConsole().getLogger().log(Level.FINER, "Begining transition to " + new File(next.getAudioFile().filename()).getName());
+							logger.debug("Begining transition to " + new File(next.getAudioFile().filename()).getName());
 							transition.start(current, next);
 						}
 					}
 				}
 			}else if(!current.getTinyMusic().done()) {
 				current.getTinyMusic().play(false);
-				getApp().getConsole().getLogger().log(Level.INFO	, "Now Playing: " + new File(current.getAudioFile().filename()).getName());
+				logger.info("Now Playing: " + new File(current.getAudioFile().filename()).getName());
 			}else {
 				current.getTinyMusic().unload();
-				getApp().getConsole().getLogger().log(Level.FINE	, "Unloaded: " + new File(current.getAudioFile().filename()).getName());
+				logger.debug("Unloaded: " + new File(current.getAudioFile().filename()).getName());
 				current = next;
 				next = null;
 				if(current != null) {
-					getApp().getConsole().getLogger().log(Level.INFO	, "Now Playing: " + new File(current.getAudioFile().filename()).getName());
+					logger.info("Now Playing: " + new File(current.getAudioFile().filename()).getName());
 				}
 			}
 		}

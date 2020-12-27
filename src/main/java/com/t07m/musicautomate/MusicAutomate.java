@@ -17,6 +17,9 @@ package com.t07m.musicautomate;
 
 import java.util.logging.Level;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.t07m.application.Application;
 import com.t07m.console.Console;
 import com.t07m.console.NativeConsole;
@@ -47,6 +50,8 @@ public class MusicAutomate extends Application{
 		new MusicAutomate(gui).start();
 	}
 
+	private static Logger logger = LoggerFactory.getLogger(MusicAutomate.class);
+	
 	private final boolean gui;
 
 	private @Getter MAConfig config;
@@ -87,20 +92,15 @@ public class MusicAutomate extends Application{
 			cw.setVisible(true);
 			this.console = cw;
 		}else {
-			this.console = new NativeConsole("MusicAutomate") {
+			this.console = new NativeConsole() {
 				public void close() {
 					stop();
 				}
 			};
 			this.console.setup();
 		}
-		this.console.getLogger().setLevel(Level.parse(config.getLogger()));
-		if(this.getConsole().getLogger().getLevel().intValue() >= 800) {
-			this.console.suppressSystemErr();
-			this.console.suppressSystemOut();
-		}
 		this.console.registerCommands(new SetCommand(), new DumpCommand(this));
-		this.console.getLogger().info("Launching Application.");
+		logger.info("Launching Application.");
 		this.musicBuffer = new MusicBuffer(this);
 		this.musicPlayer = new MusicPlayer(this);
 		this.musicSource = MusicSource.createSource(this.config);
