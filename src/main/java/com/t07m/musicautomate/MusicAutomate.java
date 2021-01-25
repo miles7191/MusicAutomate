@@ -15,21 +15,16 @@
  */
 package com.t07m.musicautomate;
 
-import java.util.logging.Level;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.t07m.application.Application;
-import com.t07m.console.Console;
-import com.t07m.console.NativeConsole;
 import com.t07m.musicautomate.command.DumpCommand;
 import com.t07m.musicautomate.command.SetCommand;
 import com.t07m.musicautomate.config.MAConfig;
 import com.t07m.musicautomate.file.source.MusicSource;
 import com.t07m.musicautomate.music.MusicBuffer;
 import com.t07m.musicautomate.music.MusicPlayer;
-import com.t07m.swing.console.ConsoleWindow;
 
 import lombok.Getter;
 import lombok.ToString;
