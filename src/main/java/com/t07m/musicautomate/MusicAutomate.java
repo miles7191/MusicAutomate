@@ -71,11 +71,11 @@ public class MusicAutomate extends Application{
 			} catch (InterruptedException e1) {}
 			System.exit(-1);
 		}
-		this.getConsole().registerCommands(new SetCommand(), new DumpCommand(this));
 		logger.info("Launching Application.");
 		this.musicBuffer = new MusicBuffer(this);
 		this.musicPlayer = new MusicPlayer(this);
 		this.musicSource = MusicSource.createSource(this.config);
+		this.getConsole().registerCommands(new SetCommand(), new DumpCommand(this));
 		this.registerService(musicBuffer);
 		this.registerService(musicPlayer);
 	}

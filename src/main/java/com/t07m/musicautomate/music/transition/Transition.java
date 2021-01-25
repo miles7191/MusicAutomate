@@ -38,10 +38,14 @@ public class Transition {
 			next.getTinyMusic().play(false, 0);
 			Thread t = new Thread() {
 				public void run() {
+					long currentEndPosition = 0; 
+					if(current.getTinyMusic().loaded()) {
+						currentEndPosition = Math.min(current.getTinyMusic().getCurrentPosition() + (long) (fadeOut.getLength() * 1000.0), current.getTinyMusic().getDuration());
+					}
 					while(transitioning) {
 						double remaining = 0;
 						if(current.getTinyMusic().loaded() && current.getTinyMusic().playing()) {
-							remaining = (current.getTinyMusic().getDuration() - current.getTinyMusic().getCurrentPosition())/ 1000.0;
+							remaining = (currentEndPosition - current.getTinyMusic().getCurrentPosition())/ 1000.0;
 						}
 						if(next.getTinyMusic().loaded() && remaining < fadeIn.getLength()) {
 							fadeIn.update(next, Direction.IN, remaining);
@@ -51,6 +55,7 @@ public class Transition {
 						}
 						if(remaining <= 0) {
 							transitioning = false;
+							current.getTinyMusic().stop();
 							try {
 								Thread.currentThread().join();
 							} catch (InterruptedException e) {}

@@ -34,7 +34,7 @@ import lombok.ToString;
 public class MusicPlayer extends Service<MusicAutomate>{
 
 	private static Logger logger = LoggerFactory.getLogger(MusicPlayer.class);
-	
+
 	private AutoMusic current, next;
 	private Transition transition;
 
@@ -73,34 +73,34 @@ public class MusicPlayer extends Service<MusicAutomate>{
 	}
 
 	public void process() {
-		if(current == null) {
-			current = getApp().getMusicBuffer().getNext();
-		}else if(next == null) {
-			next = getApp().getMusicBuffer().getNext();
-		}
-		if(current != null) {
-			if(current.getTinyMusic().playing()) {
-				double durationLeft = (current.getTinyMusic().getDuration() - current.getTinyMusic().getCurrentPosition())/ 1000.0;
-				if(transition != null && next != null) {
-					if(durationLeft < transition.getLength()) {
-						if(!transition.isTransitioning()) {
-							logger.debug("Begining transition to " + new File(next.getAudioFile().filename()).getName());
-							transition.start(current, next);
+			if(current == null) {
+				current = getApp().getMusicBuffer().getNext();
+			}else if(next == null) {
+				next = getApp().getMusicBuffer().getNext();
+			}
+			if(current != null) {
+				if(current.getTinyMusic().playing()) {
+					double durationLeft = (current.getTinyMusic().getDuration() - current.getTinyMusic().getCurrentPosition())/ 1000.0;
+					if(transition != null && next != null) {
+						if(durationLeft < transition.getLength()) {
+							if(!transition.isTransitioning()) {
+								logger.debug("Begining transition to " + new File(next.getAudioFile().filename()).getName());
+								transition.start(current, next);
+							}
 						}
 					}
-				}
-			}else if(!current.getTinyMusic().done()) {
-				current.getTinyMusic().play(false);
-				logger.info("Now Playing: " + new File(current.getAudioFile().filename()).getName());
-			}else {
-				current.getTinyMusic().unload();
-				logger.debug("Unloaded: " + new File(current.getAudioFile().filename()).getName());
-				current = next;
-				next = null;
-				if(current != null) {
+				}else if(!current.getTinyMusic().done()) {
+					current.getTinyMusic().play(false);
 					logger.info("Now Playing: " + new File(current.getAudioFile().filename()).getName());
+				}else {
+					current.getTinyMusic().unload();
+					logger.debug("Unloaded: " + new File(current.getAudioFile().filename()).getName());
+					current = next;
+					next = null;
+					if(current != null) {
+						logger.info("Now Playing: " + new File(current.getAudioFile().filename()).getName());
+					}
 				}
 			}
-		}
 	}
 }
