@@ -28,7 +28,6 @@ import com.t07m.musicautomate.music.transition.Fade;
 import com.t07m.musicautomate.music.transition.LinearFade;
 import com.t07m.musicautomate.music.transition.Transition;
 
-import kuusisto.tinysound.TinySound;
 import lombok.ToString;
 
 @ToString(callSuper = true)
