@@ -51,12 +51,8 @@ public class MusicAutomate extends Application{
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(MusicAutomate.class);
-	
-	private final boolean gui;
 
 	private @Getter MAConfig config;
-	@ToString.Exclude
-	private @Getter Console console;
 	@ToString.Exclude
 	private @Getter MusicBuffer musicBuffer;
 	@ToString.Exclude
@@ -64,7 +60,7 @@ public class MusicAutomate extends Application{
 	private @Getter MusicSource musicSource;
 
 	public MusicAutomate(boolean gui) {
-		this.gui = gui;
+		super(gui, "Music Automate");
 	}
 
 	@SuppressWarnings("serial")
@@ -81,25 +77,7 @@ public class MusicAutomate extends Application{
 			} catch (InterruptedException e1) {}
 			System.exit(-1);
 		}
-		if(this.gui) {
-			ConsoleWindow cw = new ConsoleWindow("Music Automate") {
-				public void close() {
-					stop();
-				}
-			};
-			cw.setup();
-			cw.setLocationRelativeTo(null);
-			cw.setVisible(true);
-			this.console = cw;
-		}else {
-			this.console = new NativeConsole() {
-				public void close() {
-					stop();
-				}
-			};
-			this.console.setup();
-		}
-		this.console.registerCommands(new SetCommand(), new DumpCommand(this));
+		this.getConsole().registerCommands(new SetCommand(), new DumpCommand(this));
 		logger.info("Launching Application.");
 		this.musicBuffer = new MusicBuffer(this);
 		this.musicPlayer = new MusicPlayer(this);
