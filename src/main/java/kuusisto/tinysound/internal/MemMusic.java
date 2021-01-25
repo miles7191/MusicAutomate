@@ -26,8 +26,6 @@
  */
 package kuusisto.tinysound.internal;
 
-import java.util.Random;
-
 import kuusisto.tinysound.Music;
 import kuusisto.tinysound.TinySound;
 

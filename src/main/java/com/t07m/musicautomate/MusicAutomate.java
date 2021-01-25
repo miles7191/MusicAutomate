@@ -58,7 +58,6 @@ public class MusicAutomate extends Application{
 		super(gui, "Music Automate");
 	}
 
-	@SuppressWarnings("serial")
 	public void init() {
 		this.config = new MAConfig();
 		try {

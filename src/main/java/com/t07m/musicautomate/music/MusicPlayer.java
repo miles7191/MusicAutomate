@@ -16,7 +16,6 @@
 package com.t07m.musicautomate.music;
 
 import java.io.File;
-import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +44,6 @@ public class MusicPlayer extends Service<MusicAutomate>{
 	}
 
 	public void init() {
-		TinySound.init();
 		Fade in = null, out = null;
 		MAConfig config = getApp().getConfig();
 		if(config.getFadeIn() != null) {
@@ -105,9 +103,5 @@ public class MusicPlayer extends Service<MusicAutomate>{
 				}
 			}
 		}
-	}
-
-	public void cleanup() {
-		TinySound.shutdown();
 	}
 }

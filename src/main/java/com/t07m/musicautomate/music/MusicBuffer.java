@@ -22,7 +22,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +94,10 @@ public class MusicBuffer extends Service<MusicAutomate>{
 									logger.debug("Loaded music: " + new File(audioFile.filename()).getName());
 								}else {
 									logger.warn("Failed to load music: " + new File(audioFile.filename()).getName());
+									if(!TinySound.isInitialized()) {
+										logger.debug("Found TinySound not initialized. Attempting to initialize TinySound.");
+										TinySound.init();
+									}
 								}
 							}
 						}
