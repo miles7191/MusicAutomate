@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.t07m.application.Application;
+import com.t07m.console.remote.server.RemoteServer;
 import com.t07m.musicautomate.command.DumpCommand;
 import com.t07m.musicautomate.command.SetCommand;
 import com.t07m.musicautomate.config.MAConfig;
@@ -54,6 +55,8 @@ public class MusicAutomate extends Application{
 	private @Getter MusicPlayer musicPlayer;
 	private @Getter MusicSource musicSource;
 
+	private RemoteServer remoteConsole;
+	
 	public MusicAutomate(boolean gui) {
 		super(gui, "Music Automate");
 	}
@@ -72,11 +75,18 @@ public class MusicAutomate extends Application{
 			System.exit(-1);
 		}
 		logger.info("Launching Application.");
+		remoteConsole = new RemoteServer(this.getConsole(), 13560);
+		remoteConsole.init();
+		remoteConsole.bind();
 		this.musicBuffer = new MusicBuffer(this);
 		this.musicPlayer = new MusicPlayer(this);
 		this.musicSource = MusicSource.createSource(this.config);
 		this.getConsole().registerCommands(new SetCommand(), new DumpCommand(this));
 		this.registerService(musicBuffer);
 		this.registerService(musicPlayer);
+	}
+	
+	public void cleanup() {
+		remoteConsole.unbind();
 	}
 }

@@ -41,5 +41,10 @@
 			<artifactId>ffmpeg</artifactId>
 			<version>0.6.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.t07m.remoteconsole</groupId>
+			<artifactId>RemoteConsole</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>
