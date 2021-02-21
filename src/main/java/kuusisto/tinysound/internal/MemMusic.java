@@ -239,6 +239,10 @@ public class MemMusic implements Music {
 		double length = samples / (TinySound.FORMAT.getSampleSizeInBits()/8);
 		return (long) (length * 1000);
 	}
+	
+	public void skipToEnd() {
+		this.reference.setPosition(Math.max(left.length, right.length));
+	}
 
 	/**
 	 * Get the volume of this MemMusic.

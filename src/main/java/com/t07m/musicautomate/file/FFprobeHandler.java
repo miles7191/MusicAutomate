@@ -15,53 +15,24 @@
  */
 package com.t07m.musicautomate.file;
 
-import java.io.IOException;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import net.bramp.ffmpeg.FFprobe;
-import net.bramp.ffmpeg.probe.FFmpegFormat;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.info.MultimediaInfo;
 
 public class FFprobeHandler {
 
-	private static String ffprobePath;
-	private static FFprobe staticProbe;
-
-	public static FFmpegFormat probe(String file) {
+	public static MultimediaInfo probe(String file) {
 		if(Files.exists(Paths.get(file))) {
-			FFprobe probe = getProbe();
-			if(probe != null) {
-				try {
-					return probe.probe(file).getFormat();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			try {
+				MultimediaObject obj = new MultimediaObject(new File(file));
+				return obj.getInfo();
+			}catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 		return null;
 	}
-
-	private static FFprobe getProbe() {
-		try {
-			if(ffprobePath != null) {
-				if(staticProbe == null) {
-					staticProbe = new FFprobe(ffprobePath);
-				}
-				if(staticProbe != null && staticProbe.isFFprobe()) {
-					return staticProbe;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static void setPath(String path) {
-		if(!path.equals(ffprobePath)){
-			staticProbe = null;
-			ffprobePath = path;
-		}
-	}
-
 }

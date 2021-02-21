@@ -27,10 +27,6 @@ import net.cubespace.Yamler.Config.YamlConfig;
 @ToString
 public class MAConfig extends YamlConfig{
 	
-	@Comment("Required External Program paths")
-	private @Getter @Setter String ffmpegPath = "lib/ffmpeg.exe";
-	private @Getter @Setter String ffprobePath = "lib/ffprobe.exe";
-	
 	private @Getter @Setter SourceConfig musicSource = new SourceConfig();
 	private @Getter @Setter String scratchPath = System.getenv("TEMP");
 	private @Getter @Setter int musicBuffer = 2;

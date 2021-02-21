@@ -84,21 +84,21 @@ public class MusicPlayer extends Service<MusicAutomate>{
 					if(transition != null && next != null) {
 						if(durationLeft < transition.getLength()) {
 							if(!transition.isTransitioning()) {
-								logger.debug("Begining transition to " + new File(next.getAudioFile().filename()).getName());
+								logger.debug("Begining transition to " + new File(next.getAudioFile().getFilePath()).getName());
 								transition.start(current, next);
 							}
 						}
 					}
 				}else if(!current.getTinyMusic().done()) {
 					current.getTinyMusic().play(false);
-					logger.info("Now Playing: " + new File(current.getAudioFile().filename()).getName());
+					logger.info("Now Playing: " + new File(current.getAudioFile().getFilePath()).getName());
 				}else {
 					current.getTinyMusic().unload();
-					logger.debug("Unloaded: " + new File(current.getAudioFile().filename()).getName());
+					logger.debug("Unloaded: " + new File(current.getAudioFile().getFilePath()).getName());
 					current = next;
 					next = null;
 					if(current != null) {
-						logger.info("Now Playing: " + new File(current.getAudioFile().filename()).getName());
+						logger.info("Now Playing: " + new File(current.getAudioFile().getFilePath()).getName());
 					}
 				}
 			}

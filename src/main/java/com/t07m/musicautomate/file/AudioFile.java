@@ -15,74 +15,50 @@
  */
 package com.t07m.musicautomate.file;
 
-import java.util.Map;
-
+import lombok.Getter;
 import lombok.ToString;
-import net.bramp.ffmpeg.probe.FFmpegFormat;
+import ws.schild.jave.info.MultimediaInfo;
 
 @ToString
 public class AudioFile {
 
 	@ToString.Exclude
-	private final FFmpegFormat format;
+	private final MultimediaInfo info;
+	private final @Getter String filePath;
 	
-	AudioFile(FFmpegFormat format){
-		this.format = format;
+	AudioFile(String filePath, MultimediaInfo info){
+		this.filePath = filePath;
+		this.info = info;
 	}
 	
 	@ToString.Include
-	public String filename() {
-		return format.filename;
+	public long getDuration() {
+		return info.getDuration();
 	}
 	
 	@ToString.Include
-	public int nb_streams() {
-		return format.nb_streams;
+	public String getFormat() {
+		return info.getFormat();
 	}
 	
 	@ToString.Include
-	public int nb_programs() {
-		return format.nb_programs;
+	public int getBitRate() {
+		return info.getAudio().getBitRate();
 	}
 	
 	@ToString.Include
-	public String format_name() {
-		return format.format_name;
+	public int getChannels() {
+		return info.getAudio().getChannels();
 	}
 	
 	@ToString.Include
-	public String format_long_name() {
-		return format.format_long_name;
+	public String getDecoder() {
+		return info.getAudio().getDecoder();
 	}
 	
 	@ToString.Include
-	public double start_time() {
-		return format.start_time;
-	}
-	
-	@ToString.Include
-	public double duration() {
-		return format.duration;
-	}
-	
-	@ToString.Include
-	public long size() {
-		return format.size;
-	}
-	
-	@ToString.Include
-	public long bit_rate() {
-		return format.bit_rate;
-	}
-	
-	@ToString.Include
-	public int probe_score() {
-		return format.probe_score;
-	}
-	
-	@ToString.Include
-	public Map<String, String> tags(){
-		return format.tags;
+	public int getSamplingRate() {
+		return info.getAudio().getSamplingRate();
 	}
 	
 }

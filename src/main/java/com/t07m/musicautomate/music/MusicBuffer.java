@@ -30,8 +30,6 @@ import com.t07m.application.Service;
 import com.t07m.musicautomate.MusicAutomate;
 import com.t07m.musicautomate.file.AudioFile;
 import com.t07m.musicautomate.file.AudioFileHandler;
-import com.t07m.musicautomate.file.FFmpegHandler;
-import com.t07m.musicautomate.file.FFprobeHandler;
 import com.t07m.musicautomate.file.source.MusicSource;
 
 import kuusisto.tinysound.TinySound;
@@ -55,8 +53,6 @@ public class MusicBuffer extends Service<MusicAutomate>{
 	public void init() {
 		buffer = new ArrayList<AutoMusic>(getBufferSize());
 		TinySound.init();
-		FFprobeHandler.setPath(getApp().getConfig().getFfprobePath());
-		FFmpegHandler.setPath(getApp().getConfig().getFfmpegPath());
 	}
 
 	public void process() {
@@ -68,32 +64,32 @@ public class MusicBuffer extends Service<MusicAutomate>{
 					AudioFile audioFile = AudioFileHandler.getAudioFile(file.getAbsolutePath());
 					if(audioFile != null) {
 						boolean scratched = false;
-						if(!audioFile.format_name().equalsIgnoreCase("wav")) {
-							logger.debug("Unable to play AudioFile format: " + new File(audioFile.filename()).getName());
+						if(!audioFile.getFormat().equalsIgnoreCase("wav")) {
+							logger.debug("Unable to play AudioFile format: " + new File(audioFile.getFilePath()).getName());
 							File scratchPath = new File(getApp().getConfig().getScratchPath());
 							if(scratchPath.exists() && scratchPath.canRead() && scratchPath.canWrite()) {
-								logger.debug("Converting " + new File(audioFile.filename()).getName() + " to wav.");
+								logger.debug("Converting " + new File(audioFile.getFilePath()).getName() + " to wav.");
 								audioFile = AudioFileHandler.convertAudioFile(audioFile, scratchPath.getAbsolutePath());
 								scratched = true;
 							}else {
 								logger.error("Unable to utilize scratch directory!");
 							}
 							if(audioFile != null) {
-								MemMusic music = (MemMusic) TinySound.loadMusic(new File(audioFile.filename()));
+								MemMusic music = (MemMusic) TinySound.loadMusic(new File(audioFile.getFilePath()));
 								if(scratched) {
 									try {
-										Files.deleteIfExists(Paths.get(audioFile.filename()));
+										Files.deleteIfExists(Paths.get(audioFile.getFilePath()));
 									} catch (IOException e) {
-										logger.debug("Unable to delete scratch file: " + new File(audioFile.filename()).getName());
+										logger.debug("Unable to delete scratch file: " + new File(audioFile.getFilePath()).getName());
 									}
 								}
 								if(music != null) {
 									AutoMusic am = new AutoMusic(music, audioFile);
 									buffer.add(am);
 									count++;
-									logger.debug("Loaded music: " + new File(audioFile.filename()).getName());
+									logger.debug("Loaded music: " + new File(audioFile.getFilePath()).getName());
 								}else {
-									logger.warn("Failed to load music: " + new File(audioFile.filename()).getName());
+									logger.warn("Failed to load music: " + new File(audioFile.getFilePath()).getName());
 									if(!TinySound.isInitialized()) {
 										logger.debug("Found TinySound not initialized. Attempting to initialize TinySound.");
 										TinySound.init();

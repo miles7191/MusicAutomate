@@ -19,31 +19,31 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import net.bramp.ffmpeg.probe.FFmpegFormat;
+import ws.schild.jave.info.MultimediaInfo;
 
 public class AudioFileHandler {
 
 	public static AudioFile getAudioFile(String filePath) {
 		if(Files.exists(Paths.get(filePath))) {
-			FFmpegFormat format = FFprobeHandler.probe(filePath);
+			MultimediaInfo format = FFprobeHandler.probe(filePath);
 			if(format != null) {
-				return new AudioFile(format);
+				return new AudioFile(new File(filePath).getAbsolutePath(), format);
 			}
 		}
 		return null;
 	}
 
 	public static AudioFile convertAudioFile(AudioFile source, String scratch) {
-		String name = new File(source.filename()).getName();
-		name = name.substring(0, name.length()-source.format_name().length()-1);
+		String name = new File(source.getFilePath()).getName();
+		name = name.split("\\.")[0];
 		if(FFmpegHandler.convert(
-				source.filename(),
+				source.getFilePath(),
 				scratch + "/" + name + ".wav", 
-				true, 
+				"pcm_s16le",
 				"wav", 
 				1, 
 				48000, 
-				16384
+				16
 				)) {
 			return getAudioFile(scratch + "/" + name + ".wav");
 		}

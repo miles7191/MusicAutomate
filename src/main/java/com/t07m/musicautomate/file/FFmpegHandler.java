@@ -15,78 +15,57 @@
  */
 package com.t07m.musicautomate.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import net.bramp.ffmpeg.FFmpeg;
-import net.bramp.ffmpeg.FFmpegExecutor;
-import net.bramp.ffmpeg.builder.FFmpegBuilder;
-import net.bramp.ffmpeg.job.FFmpegJob;
+import ws.schild.jave.Encoder;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.encode.AudioAttributes;
+import ws.schild.jave.encode.EncodingAttributes;
 
 public class FFmpegHandler {
 
-	private static String ffmpegPath;
-	private static FFmpeg staticFFmpeg;
+	private static Encoder staticEncoder;
 
-	public static boolean convert(String input, String output, boolean override, String format, int channels, int sampleRate, int bitRate) {
-		var afin = AudioFileHandler.getAudioFile(input);
-		if(afin != null) {
-			FFmpeg ffmpeg = getFFmpeg();
-			if(ffmpeg != null) {
-				try {
-					FFmpegBuilder builder = new FFmpegBuilder()
+	public static boolean convert(String input, String output, String codec, String format, int channels, int sampleRate, int bitRate) {
+		File source = new File(input);
+		File target = new File(output);
+		if(source.exists()) {
+			Encoder encoder = getEncoder();
+			try {
+				synchronized(encoder) {
+					AudioAttributes audio = new AudioAttributes();
+					audio.setCodec(codec);
+					audio.setBitRate(bitRate);
+					audio.setChannels(channels);
+					audio.setSamplingRate(sampleRate);
 
-							.setInput(input)
-							.overrideOutputFiles(override)
-							.addOutput(output)
-							.setFormat(format)
-							.setAudioChannels(channels)
-							.setAudioSampleRate(sampleRate)
-							.setAudioBitRate(bitRate)
-							.done();
+					EncodingAttributes attributes = new EncodingAttributes();
+					attributes.setOutputFormat(format);
+					attributes.setAudioAttributes(audio);
 
-					FFmpegExecutor executor = new FFmpegExecutor(ffmpeg);
-					FFmpegJob job = executor.createJob(builder);
-					job.run();
-					if(job.getState() == FFmpegJob.State.FINISHED) {
-						var afout = AudioFileHandler.getAudioFile(output);
-						if(afout != null && Math.abs(afin.duration()-afout.duration()) < 0.1) {
-							return true;
-						}
-					}			
-				} catch (IOException e) {
-					e.printStackTrace();
+					encoder.encode(new MultimediaObject(source), target, attributes);
+					return true;
 				}
+			}catch (Exception e) {
+				try {
+					Files.deleteIfExists(Paths.get(output));
+				} catch (IOException e1) {}
+				for(String s : encoder.getUnhandledMessages()) {
+					System.err.println(s);
+				}
+				e.printStackTrace();
 			}
 		}
-		try {
-			Files.deleteIfExists(Paths.get(output));
-		} catch (IOException e) {}
 		return false;
 	}
 
-	private static FFmpeg getFFmpeg() {
-		try {
-			if(ffmpegPath != null) {
-				if(staticFFmpeg == null) {
-					staticFFmpeg = new FFmpeg(ffmpegPath);
-				}
-				if(staticFFmpeg != null && staticFFmpeg.isFFmpeg()) {
-					return staticFFmpeg;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+	private static Encoder getEncoder() {
+		if(staticEncoder == null) {
+			staticEncoder = new Encoder();
 		}
-		return null;
+		return staticEncoder;
 	}
-
-	public static void setPath(String path) {
-		if(!path.equals(ffmpegPath)){
-			staticFFmpeg = null;
-			ffmpegPath = path;
-		}
-	}
-
 }

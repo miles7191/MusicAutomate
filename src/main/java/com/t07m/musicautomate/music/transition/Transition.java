@@ -55,7 +55,7 @@ public class Transition {
 						}
 						if(remaining <= 0) {
 							transitioning = false;
-							current.getTinyMusic().stop();
+							current.getTinyMusic().skipToEnd();
 							try {
 								Thread.currentThread().join();
 							} catch (InterruptedException e) {}
