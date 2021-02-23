@@ -18,6 +18,7 @@ package com.t07m.musicautomate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.zafarkhaja.semver.Version;
 import com.t07m.application.Application;
 import com.t07m.console.remote.server.RemoteServer;
 import com.t07m.musicautomate.command.DumpCommand;
@@ -34,6 +35,9 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 @ToString(callSuper = true)
 public class MusicAutomate extends Application{
 
+	public static final Version VERSION = Version.valueOf("1.0.0");
+	public static final String GITHUB_REPO = "miles7191/MusicAutomate";
+	
 	public static void main(String[] args) {
 		boolean gui = true;
 		if(args.length > 0) {
@@ -75,6 +79,14 @@ public class MusicAutomate extends Application{
 			System.exit(-1);
 		}
 		logger.info("Launching Application.");
+		if(this.config.isAutoUpdate()) {
+			this.initAutoUpdater(
+					GITHUB_REPO,
+					VERSION, 
+					config.getStartupScript(),
+					config.isUsePrereleases(),
+					config.getCronSchedule());
+		}
 		remoteConsole = new RemoteServer(this.getConsole(), 13560);
 		remoteConsole.init();
 		remoteConsole.bind();
