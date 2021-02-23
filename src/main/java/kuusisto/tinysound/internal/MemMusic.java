@@ -239,9 +239,10 @@ public class MemMusic implements Music {
 		double length = samples / (TinySound.FORMAT.getSampleSizeInBits()/8);
 		return (long) (length * 1000);
 	}
-	
+
 	public void skipToEnd() {
-		this.reference.setPosition(Math.max(left.length, right.length));
+		if(this.reference != null)
+			this.reference.setPosition(Math.max(left.length, right.length));
 	}
 
 	/**
@@ -301,7 +302,7 @@ public class MemMusic implements Music {
 	public boolean loaded() {
 		return this.reference != null;
 	}
-	
+
 	/////////////
 	//Reference//
 	/////////////

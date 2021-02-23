@@ -35,7 +35,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 @ToString(callSuper = true)
 public class MusicAutomate extends Application{
 
-	public static final Version VERSION = Version.valueOf("1.0.0");
+	public static final Version VERSION = Version.valueOf("1.0.1");
 	public static final String GITHUB_REPO = "miles7191/MusicAutomate";
 	
 	public static void main(String[] args) {
