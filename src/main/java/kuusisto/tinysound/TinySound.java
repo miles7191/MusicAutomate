@@ -188,6 +188,13 @@ public class TinySound {
 	public static boolean isInitialized() {
 		return TinySound.inited;
 	}
+
+	public static int getSkippedFrameAverage() {
+		if (!TinySound.inited) {
+			return -1;
+		}
+		return TinySound.autoUpdater.getSkippedFrameAverage();
+	}
 	
 	/**
 	 * Get the global volume for all audio.

@@ -27,6 +27,7 @@ import com.t07m.musicautomate.config.MAConfig;
 import com.t07m.musicautomate.file.source.MusicSource;
 import com.t07m.musicautomate.music.MusicBuffer;
 import com.t07m.musicautomate.music.MusicPlayer;
+import com.t07m.musicautomate.system.monitors.SkippedFrameMonitor;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -35,7 +36,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 @ToString(callSuper = true)
 public class MusicAutomate extends Application{
 
-	public static final Version VERSION = Version.valueOf("1.0.2");
+	public static final Version VERSION = Version.valueOf("1.1.0");
 	public static final String GITHUB_REPO = "miles7191/MusicAutomate";
 	
 	public static void main(String[] args) {
@@ -58,6 +59,8 @@ public class MusicAutomate extends Application{
 	@ToString.Exclude
 	private @Getter MusicPlayer musicPlayer;
 	private @Getter MusicSource musicSource;
+	
+	private @Getter SkippedFrameMonitor skippedFrameMonitor;
 
 	private RemoteServer remoteConsole;
 	
@@ -93,9 +96,11 @@ public class MusicAutomate extends Application{
 		this.musicBuffer = new MusicBuffer(this);
 		this.musicPlayer = new MusicPlayer(this);
 		this.musicSource = MusicSource.createSource(this.config);
+		this.skippedFrameMonitor = new SkippedFrameMonitor(this);
 		this.getConsole().registerCommands(new SetCommand(), new DumpCommand(this));
 		this.registerService(musicBuffer);
 		this.registerService(musicPlayer);
+		this.registerService(skippedFrameMonitor);
 	}
 	
 	public void cleanup() {
