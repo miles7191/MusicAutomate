@@ -35,12 +35,6 @@ public class MAConfig extends YamlConfig{
 	private @Getter @Setter FadeConfig fadeOut = new FadeConfig();
 	private @Getter @Setter FadeConfig fadeIn = new FadeConfig();
 	
-	@Comment("Auto Update Settings")
-	private @Getter @Setter boolean AutoUpdate = false;
-	private @Getter @Setter boolean UsePrereleases = false;
-	private @Getter @Setter String StartupScript = "";
-	private @Getter @Setter String CronSchedule = "0 0 2 * * *";
-	
 	public MAConfig() {
 		CONFIG_HEADER = new String[]{"MusicAutomate Configuration Data"};
 		CONFIG_FILE = new File("config.yml");

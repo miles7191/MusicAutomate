@@ -37,7 +37,6 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 public class MusicAutomate extends Application{
 
 	public static final Version VERSION = Version.valueOf("1.1.0");
-	public static final String GITHUB_REPO = "miles7191/MusicAutomate";
 	
 	public static void main(String[] args) {
 		boolean gui = true;
@@ -82,14 +81,6 @@ public class MusicAutomate extends Application{
 			System.exit(-1);
 		}
 		logger.info("Launching Application.");
-		if(this.config.isAutoUpdate()) {
-			this.initAutoUpdater(
-					GITHUB_REPO,
-					VERSION, 
-					config.getStartupScript(),
-					config.isUsePrereleases(),
-					config.getCronSchedule());
-		}
 		remoteConsole = new RemoteServer(this.getConsole(), 13560);
 		remoteConsole.init();
 		remoteConsole.bind();
