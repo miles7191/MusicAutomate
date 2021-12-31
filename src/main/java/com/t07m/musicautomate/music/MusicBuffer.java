@@ -40,7 +40,7 @@ import lombok.ToString;
 public class MusicBuffer extends Service<MusicAutomate>{
 
 	private static Logger logger = LoggerFactory.getLogger(MusicBuffer.class);
-	
+
 	@ToString.Exclude
 	private Random random = new Random();
 	private int count = 0;
@@ -57,10 +57,12 @@ public class MusicBuffer extends Service<MusicAutomate>{
 
 	public void process() {
 		if(count < getBufferSize()) {
+			logger.debug("Buffer size less than limit");
 			MusicSource source = getApp().getMusicSource();
 			if(source.exists() && source.canRead()) {
 				File file = getRandomFile(source);
 				if(file != null) {
+					logger.debug("Got audio file " + file.getName());
 					AudioFile audioFile = AudioFileHandler.getAudioFile(file.getAbsolutePath());
 					if(audioFile != null) {
 						boolean scratched = false;
@@ -74,26 +76,30 @@ public class MusicBuffer extends Service<MusicAutomate>{
 							}else {
 								logger.error("Unable to utilize scratch directory!");
 							}
-							if(audioFile != null) {
-								MemMusic music = (MemMusic) TinySound.loadMusic(new File(audioFile.getFilePath()));
-								if(scratched) {
-									try {
-										Files.deleteIfExists(Paths.get(audioFile.getFilePath()));
-									} catch (IOException e) {
-										logger.debug("Unable to delete scratch file: " + new File(audioFile.getFilePath()).getName());
-									}
+							if(!audioFile.getFormat().equalsIgnoreCase("wav")) {
+								logger.error("Convert failed.");
+								return;
+							}
+						}
+						if(audioFile != null) {
+							MemMusic music = (MemMusic) TinySound.loadMusic(new File(audioFile.getFilePath()));
+							if(scratched) {
+								try {
+									Files.deleteIfExists(Paths.get(audioFile.getFilePath()));
+								} catch (IOException e) {
+									logger.debug("Unable to delete scratch file: " + new File(audioFile.getFilePath()).getName());
 								}
-								if(music != null) {
-									AutoMusic am = new AutoMusic(music, audioFile);
-									buffer.add(am);
-									count++;
-									logger.debug("Loaded music: " + new File(audioFile.getFilePath()).getName());
-								}else {
-									logger.warn("Failed to load music: " + new File(audioFile.getFilePath()).getName());
-									if(!TinySound.isInitialized()) {
-										logger.debug("Found TinySound not initialized. Attempting to initialize TinySound.");
-										TinySound.init();
-									}
+							}
+							if(music != null) {
+								AutoMusic am = new AutoMusic(music, audioFile);
+								buffer.add(am);
+								count++;
+								logger.debug("Loaded music: " + new File(audioFile.getFilePath()).getName());
+							}else {
+								logger.warn("Failed to load music: " + new File(audioFile.getFilePath()).getName());
+								if(!TinySound.isInitialized()) {
+									logger.debug("Found TinySound not initialized. Attempting to initialize TinySound.");
+									TinySound.init();
 								}
 							}
 						}
