@@ -38,14 +38,14 @@ public class AudioFileHandler {
 		name = name.split("\\.")[0];
 		if(FFmpegHandler.convert(
 				source.getFilePath(),
-				scratch + "/" + name + ".wav", 
+				scratch + File.separator + name + ".wav", 
 				"pcm_s16le",
 				"wav", 
 				1, 
 				48000, 
 				16
 				)) {
-			return getAudioFile(scratch + "/" + name + ".wav");
+			return getAudioFile(scratch + File.separator + name + ".wav");
 		}
 		return null;
 	}
